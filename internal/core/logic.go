@@ -31,3 +31,13 @@ func (s Service) UpdateUser(user domain.User) (err error) {
 
 	return
 }
+
+func (s Service) DeleteUser(user domain.User) (err error) {
+	err = s.repository.DeleteUser(user.Id)
+	switch err != nil {
+	case true:
+		// @TODO once the logger service implemented, this part must report the error to logger service
+	}
+
+	return
+}
