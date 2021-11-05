@@ -10,16 +10,39 @@ type Repository struct {
 	connection cassandraQB.Connection
 }
 
+var usersMetadata = cassandraQB.TableMetadata{
+	Keyspace: "tg",
+	Pk:       map[string]struct{}{"id": {}},
+	Table:    "users",
+	Columns: map[string]struct{}{
+		"id":            {},
+		"name":          {},
+		"lastname":      {},
+		"bio":           {},
+		"username":      {},
+		"phone":         {},
+		"online_status": {},
+		"created_at":    {},
+	},
+	Ck:         nil,
+	DependsOn:  nil,
+	Connection: nil,
+}
+
 func NewUsersRepository(hosts []string) (Repository, error) {
 	connection := cassandraQB.Connection{
 		Cluster: gocql.NewCluster(hosts...),
 		Session: nil,
 	}
+
 	session, err := connection.Cluster.CreateSession()
 	switch err != nil {
 	case true:
 		return Repository{}, err
 	}
+
 	connection.Session = session
-	return Repository{connection: connection}, nil
+	usersMetadata.Connection = connection.Session
+
+	return Repository{connection: connection, metadata: usersMetadata}, nil
 }
