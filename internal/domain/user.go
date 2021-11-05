@@ -1,12 +1,11 @@
 package domain
 
 import (
-	"github.com/gocql/gocql"
 	"time"
 )
 
 type User struct {
-	Id            gocql.UUID
+	Id            string
 	Username      string
 	Phone         string
 	Online_status bool
