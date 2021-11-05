@@ -1,8 +1,11 @@
 package core
 
 type Service struct {
+	repository UsersRepository
 }
 
-func NewUsersCore() Service {
-	return Service{}
+func NewUsersCore(repository UsersRepository) Service {
+	return Service{
+		repository: repository,
+	}
 }
