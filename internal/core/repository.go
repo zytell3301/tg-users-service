@@ -3,6 +3,6 @@ package core
 import "github.com/zytel3301/tg-users-service/internal/domain"
 
 type UsersRepository interface {
-	NewUser(user domain.User) error
-	UpdateUser(user domain.User) error
+	NewUser(domain.User) error
+	UpdateUser(domain.User) error
 }
