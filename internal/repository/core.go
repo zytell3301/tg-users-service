@@ -8,8 +8,9 @@ import (
 )
 
 type Repository struct {
-	metadata   cassandraQB.TableMetadata
-	connection cassandraQB.Connection
+	metadata    cassandraQB.TableMetadata
+	connection  cassandraQB.Connection
+	idGenerator *uuid_generator.Generator
 }
 
 var usersMetadata = cassandraQB.TableMetadata{
@@ -31,7 +32,7 @@ var usersMetadata = cassandraQB.TableMetadata{
 	Connection: nil,
 }
 
-func NewUsersRepository(hosts []string) (Repository, error) {
+func NewUsersRepository(hosts []string, generator *uuid_generator.Generator) (Repository, error) {
 	connection := cassandraQB.Connection{
 		Cluster: gocql.NewCluster(hosts...),
 		Session: nil,
@@ -46,7 +47,7 @@ func NewUsersRepository(hosts []string) (Repository, error) {
 	connection.Session = session
 	usersMetadata.Connection = connection.Session
 
-	return Repository{connection: connection, metadata: usersMetadata}, nil
+	return Repository{connection: connection, metadata: usersMetadata, idGenerator: generator}, nil
 }
 
 func (r Repository) NewUser(user domain.User) (err error) {
@@ -64,8 +65,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 		"online_status": user.Online_status,
 		"created_at":    user.Created_at,
 	}
-	generator, _ := uuid_generator.NewGenerator("")
-	err = cassandraQB.AddId(&data, nil, generator)
+	err = cassandraQB.AddId(&data, nil, r.idGenerator)
 	switch err != nil {
 	case true:
 		return
