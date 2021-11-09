@@ -52,10 +52,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 }
 
 func (r Repository) NewUser(user domain.User) (err error) {
-	batch := &gocql.Batch{
-		Type: gocql.LoggedBatch,
-		Cons: gocql.All,
-	}
+	batch := r.connection.Session.NewBatch(gocql.LoggedBatch)
 	data := map[string]interface{}{
 		"id":            user.Id,
 		"username":      user.Username,
@@ -92,10 +89,7 @@ func (r Repository) UpdateUser(user domain.User) (err error) {
 		"online_status": user.Online_status,
 		"created_at":    user.Created_at,
 	}
-	batch := &gocql.Batch{
-		Type: gocql.UnloggedBatch,
-		Cons: gocql.All,
-	}
+	batch := r.connection.Session.NewBatch(gocql.LoggedBatch)
 
 	err = r.metadata.UpdateRecord(map[string]interface{}{"id": user.Id}, data, batch)
 	switch err != nil {
@@ -108,10 +102,7 @@ func (r Repository) UpdateUser(user domain.User) (err error) {
 }
 
 func (r Repository) DeleteUser(id string) error {
-	batch := &gocql.Batch{
-		Type: gocql.UnloggedBatch,
-		Cons: gocql.All,
-	}
+	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
 
 	return r.metadata.DeleteRecord(map[string]interface{}{"id": id}, batch)
 }
