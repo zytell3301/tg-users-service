@@ -34,3 +34,14 @@ func TestNewUsersRepository2(t *testing.T) {
 		t.Error("Expected to return error but no error returned")
 	}
 }
+
+// Test fails if the number of current active nodes are less than highest RF (Here it is 3).
+// This error is not related to codes
+func TestRepository_NewUser(t *testing.T) {
+	repo, _ := NewUsersRepository(hosts, "tg", idGenerator)
+	err := repo.NewUser(dummyUser)
+	switch err != nil {
+	case true:
+		t.Errorf("An error encountered while adding a new user. Error: %v", err)
+	}
+}
