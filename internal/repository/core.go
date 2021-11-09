@@ -53,8 +53,13 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 
 func (r Repository) NewUser(user domain.User) (err error) {
 	batch := r.connection.Session.NewBatch(gocql.LoggedBatch)
+	id, err := r.idGenerator.GenerateV4()
+	switch err != nil {
+	case true:
+		return err
+	}
 	data := map[string]interface{}{
-		"id":            user.Id,
+		"id":            id.String(),
 		"username":      user.Username,
 		"name":          user.Name,
 		"lastname":      user.Lastname,
@@ -63,7 +68,6 @@ func (r Repository) NewUser(user domain.User) (err error) {
 		"online_status": user.Online_status,
 		"created_at":    user.Created_at,
 	}
-	err = cassandraQB.AddId(&data, nil, r.idGenerator)
 	switch err != nil {
 	case true:
 		return
