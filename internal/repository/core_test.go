@@ -15,3 +15,11 @@ func TestNewUsersRepository(t *testing.T) {
 		t.Errorf("An error encountered while creating a new repo. Error: %v", err)
 	}
 }
+
+func TestNewUsersRepository2(t *testing.T) {
+	_,err := NewUsersRepository(nil,idGenerator)
+	switch err == nil {
+	case true:
+		t.Error("Expected to return error but no error returned")
+	}
+}
