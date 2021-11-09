@@ -105,3 +105,12 @@ func (r Repository) UpdateUser(user domain.User) (err error) {
 	err = r.connection.Session.ExecuteBatch(batch)
 	return
 }
+
+func (r Repository) DeleteUser(id string) error {
+	batch := &gocql.Batch{
+		Type: gocql.UnloggedBatch,
+		Cons: gocql.All,
+	}
+
+	return r.metadata.DeleteRecord(map[string]interface{}{"id": id}, batch)
+}
