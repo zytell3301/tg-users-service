@@ -32,12 +32,13 @@ var usersMetadata = cassandraQB.TableMetadata{
 	Connection: nil,
 }
 
-func NewUsersRepository(hosts []string, generator *uuid_generator.Generator) (Repository, error) {
+func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generator.Generator) (Repository, error) {
 	connection := cassandraQB.Connection{
 		Cluster: gocql.NewCluster(hosts...),
 		Session: nil,
 	}
-
+	connection.Cluster.Keyspace = keyspace
+	connection.Cluster.Consistency = gocql.All
 	session, err := connection.Cluster.CreateSession()
 	switch err != nil {
 	case true:
