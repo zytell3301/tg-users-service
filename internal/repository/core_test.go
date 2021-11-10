@@ -18,6 +18,7 @@ var dummyUser = domain.User{
 	Online_status: false,
 	Created_at:    time.Now(),
 }
+var dummyUserId = "5a087beb-4ba5-4583-b2a0-bce500395e1a"
 
 func TestNewUsersRepository(t *testing.T) {
 	repo, err := NewUsersRepository(hosts, "tg", idGenerator)
@@ -43,5 +44,16 @@ func TestRepository_NewUser(t *testing.T) {
 	switch err != nil {
 	case true:
 		t.Errorf("An error encountered while adding a new user. Error: %v", err)
+	}
+}
+
+func TestRepository_UpdateUser(t *testing.T) {
+	repo, _ := NewUsersRepository(hosts, "tg", idGenerator)
+	err := repo.UpdateUser(domain.User{
+		Id: dummyUserId,
+	})
+	switch err != nil {
+	case true:
+		t.Errorf("An error encountered while updating an exsiting user. Error: %v", err)
 	}
 }
