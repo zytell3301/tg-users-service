@@ -84,7 +84,6 @@ func (r Repository) NewUser(user domain.User) (err error) {
 
 func (r Repository) UpdateUser(user domain.User) (err error) {
 	data := map[string]interface{}{
-		"id":            user.Id,
 		"username":      user.Username,
 		"name":          user.Name,
 		"lastname":      user.Lastname,
