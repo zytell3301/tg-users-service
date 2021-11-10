@@ -25,6 +25,8 @@ github.com/zytell3301/cassandra-query-builder v0.0.0-20211108205945-b873710316f9
 github.com/zytell3301/cassandra-query-builder v0.0.0-20211108205945-b873710316f9/go.mod h1:lifWt8Oe1PPWf9kw/8uonFAz7v9QaAxPH4Z9Vbrm+Zk=
 github.com/zytell3301/cassandra-query-builder v0.0.0-20211110211120-3b255a09cc4d h1:b2Q1Xapix5OLD9kOIG/3mSQCYCZ8oWC+QylXOnZlbgU=
 github.com/zytell3301/cassandra-query-builder v0.0.0-20211110211120-3b255a09cc4d/go.mod h1:lifWt8Oe1PPWf9kw/8uonFAz7v9QaAxPH4Z9Vbrm+Zk=
+github.com/zytell3301/cassandra-query-builder v0.0.0-20211110211638-970f96a891de h1:sccQOiSqfyPv86wqK44NofCyCS31QJ9hVOy+P1/RMD4=
+github.com/zytell3301/cassandra-query-builder v0.0.0-20211110211638-970f96a891de/go.mod h1:lifWt8Oe1PPWf9kw/8uonFAz7v9QaAxPH4Z9Vbrm+Zk=
 github.com/zytell3301/uuid-generator v0.0.0-20211105141829-f5b70d07ddec/go.mod h1:qLqL0VUqTxC+Awbn/Twa3dEIwt2GBRb10fstB3WfF+Q=
 github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad h1:QAYaDR7faTp/GHkk84qM7wOKVrxwEV8W6qvilh10/JQ=
 github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad/go.mod h1:qLqL0VUqTxC+Awbn/Twa3dEIwt2GBRb10fstB3WfF+Q=
