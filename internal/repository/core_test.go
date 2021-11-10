@@ -76,3 +76,12 @@ func TestRepository_UpdateUser2(t *testing.T) {
 		t.Errorf("An error encountered while updating an existing user. Error: %v", err)
 	}
 }
+
+func TestRepository_DeleteUser(t *testing.T) {
+	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
+	err := repo.DeleteUser(dummyUserId)
+	switch err != nil {
+	case true:
+		t.Errorf("An error encountered while deleting an existing user. Error: %v", err)
+	}
+}
