@@ -85,3 +85,12 @@ func TestRepository_DeleteUser(t *testing.T) {
 		t.Errorf("An error encountered while deleting an existing user. Error: %v", err)
 	}
 }
+
+func TestRepository_DeleteUser2(t *testing.T) {
+	repo,_ := NewUsersRepository(hosts,keyspace,idGenerator)
+	err := repo.DeleteUser("")
+	switch err == nil {
+	case true:
+		t.Error("Expected method DeleteUser to return error but no error returned")
+	}
+}
