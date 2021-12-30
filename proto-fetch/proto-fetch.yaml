@@ -1,0 +1,15 @@
+base-url: github.com
+repository-owner: zytell3301
+repository: tg-protos
+files:
+  - ./global/error/error.proto->$PROJECT_ROOT/$PROTO_ROOT/
+  - ./users-service/users-service.proto->$PROJECT_ROOT/$PROTO_ROOT/
+before-fetch-commands:
+  - rm $PROJECT_ROOT/$PROTO_ROOT/error.proto
+  - rm $PROJECT_ROOT/$PROTO_ROOT/users-service.proto
+after-fetch-commands:
+  - protoc --go_out=./../pkg -I=.. $PROJECT_ROOT/$PROTO_ROOT/error.proto
+  - protoc --go_out=./.. -I=.. --go_opt=module=github.com/zytell3301/tg-users-service $PROJECT_ROOT/$PROTO_ROOT/users-service.proto
+env-variables:
+  - $PROTO_ROOT=api/pb/UsersService
+  - $PROJECT_ROOT=./..
