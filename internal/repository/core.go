@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/gocql/gocql"
-	"github.com/zytel3301/tg-users-service/internal/domain"
+	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/cassandra-query-builder"
 	uuid_generator "github.com/zytell3301/uuid-generator"
 )

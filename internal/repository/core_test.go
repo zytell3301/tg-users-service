@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/zytel3301/tg-users-service/internal/domain"
+	"github.com/zytell3301/tg-users-service/internal/domain"
 	uuid_generator "github.com/zytell3301/uuid-generator"
 	"testing"
 	"time"
