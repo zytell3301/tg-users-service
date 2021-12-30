@@ -1,2 +1,7 @@
 .idea
+
+# The pb directory is excluded for preventing redundant changes in
+# repositories. If you want to see proto files please refore to
+# central repository for pb files
+# github.com/zytell3301/tg-protos
 api/pb
