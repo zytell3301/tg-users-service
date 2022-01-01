@@ -9,10 +9,20 @@ type UserAlreadyExists struct {
 	derror
 }
 
+type UserNotFound struct {
+	derror
+}
+
 var (
 	UserAlreadyExistsError = UserAlreadyExists{
 		derror{
 			Message: "user already exists",
+			Code:    1,
+		},
+	}
+	UserNotFoundError = UserNotFound{
+		derror{
+			Message: "user not found",
 			Code:    1,
 		},
 	}
