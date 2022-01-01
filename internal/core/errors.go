@@ -13,6 +13,14 @@ type UserNotFound struct {
 	derror
 }
 
+type UsernameAlreadyExists struct {
+	derror
+}
+
+type UsernameTooShort struct {
+	derror
+}
+
 var (
 	UserAlreadyExistsError = UserAlreadyExists{
 		derror{
@@ -24,6 +32,18 @@ var (
 		derror{
 			Message: "user not found",
 			Code:    1,
+		},
+	}
+	UsernameAlreadyExistsError = UsernameAlreadyExists{
+		derror{
+			Message: "username already exists",
+			Code:    1,
+		},
+	}
+	UsernameTooShortError = UsernameTooShort{
+		derror{
+			Message: "username too short",
+			Code:    2,
 		},
 	}
 )
