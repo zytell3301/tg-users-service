@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UsersServiceClient interface {
 	NewUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*error1.Error, error)
-	DeleteUser(ctx context.Context, in *Id, opts ...grpc.CallOption) (*error1.Error, error)
+	DeleteUser(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*error1.Error, error)
 }
 
 type usersServiceClient struct {
@@ -40,7 +40,7 @@ func (c *usersServiceClient) NewUser(ctx context.Context, in *User, opts ...grpc
 	return out, nil
 }
 
-func (c *usersServiceClient) DeleteUser(ctx context.Context, in *Id, opts ...grpc.CallOption) (*error1.Error, error) {
+func (c *usersServiceClient) DeleteUser(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*error1.Error, error) {
 	out := new(error1.Error)
 	err := c.cc.Invoke(ctx, "/zytell3301.UsersService.UsersService/DeleteUser", in, out, opts...)
 	if err != nil {
@@ -54,7 +54,7 @@ func (c *usersServiceClient) DeleteUser(ctx context.Context, in *Id, opts ...grp
 // for forward compatibility
 type UsersServiceServer interface {
 	NewUser(context.Context, *User) (*error1.Error, error)
-	DeleteUser(context.Context, *Id) (*error1.Error, error)
+	DeleteUser(context.Context, *Phone) (*error1.Error, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
 
@@ -65,7 +65,7 @@ type UnimplementedUsersServiceServer struct {
 func (UnimplementedUsersServiceServer) NewUser(context.Context, *User) (*error1.Error, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NewUser not implemented")
 }
-func (UnimplementedUsersServiceServer) DeleteUser(context.Context, *Id) (*error1.Error, error) {
+func (UnimplementedUsersServiceServer) DeleteUser(context.Context, *Phone) (*error1.Error, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedUsersServiceServer) mustEmbedUnimplementedUsersServiceServer() {}
@@ -100,7 +100,7 @@ func _UsersService_NewUser_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _UsersService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
+	in := new(Phone)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func _UsersService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/zytell3301.UsersService.UsersService/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).DeleteUser(ctx, req.(*Id))
+		return srv.(UsersServiceServer).DeleteUser(ctx, req.(*Phone))
 	}
 	return interceptor(ctx, in, info, handler)
 }
