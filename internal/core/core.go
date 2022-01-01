@@ -24,8 +24,8 @@ func (s Service) NewUser(user domain.User) (err error) {
 }
 
 // @TODO check if the username already exists or not
-func (s Service) UpdateUsername(user domain.User, username string) (err error) {
-	err = s.repository.UpdateUsername(user.Phone, username)
+func (s Service) UpdateUsername(phone string, username string) (err error) {
+	err = s.repository.UpdateUsername(phone, username)
 	switch err != nil {
 	case true:
 		// @TODO once the logger service implemented, this part must report the error to logger service
