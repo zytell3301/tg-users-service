@@ -51,3 +51,25 @@ func (h Handler) DeleteUser(ctx context.Context, phone *UsersService.Phone) (*er
 		Code: 0,
 	}, nil
 }
+
+func (h Handler) UpdateUsername(ctx context.Context, message *UsersService.UpdateUsernameMessage) (*error1.Error, error) {
+	err := h.core.UpdateUsername(message.Phone, message.Username)
+
+	switch {
+	case errors.As(err, core.UsernameTooShort{}):
+		return &error1.Error{
+			Message: core.UsernameTooShortError.Message,
+			Code:    core.UsernameTooShortError.Code,
+		}, nil
+
+	case errors.As(err, core.UsernameAlreadyExists{}):
+		return &error1.Error{
+			Message: core.UsernameAlreadyExistsError.Message,
+			Code:    core.UsernameAlreadyExistsError.Code,
+		}, nil
+	}
+
+	return &error1.Error{
+		Code: 0,
+	}, nil
+}
