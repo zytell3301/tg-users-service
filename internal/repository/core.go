@@ -8,9 +8,10 @@ import (
 )
 
 type Repository struct {
-	metadata    cassandraQB.TableMetadata
-	connection  cassandraQB.Connection
-	idGenerator *uuid_generator.Generator
+	usersMetadata        cassandraQB.TableMetadata
+	usersPkPhoneMetadata cassandraQB.TableMetadata
+	connection           cassandraQB.Connection
+	idGenerator          *uuid_generator.Generator
 }
 
 var usersMetadata = cassandraQB.TableMetadata{
@@ -61,7 +62,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 	connection.Session = session
 	usersMetadata.Connection = connection.Session
 
-	return Repository{connection: connection, metadata: usersMetadata, idGenerator: generator}, nil
+	return Repository{connection: connection, usersMetadata: usersMetadata, usersPkPhoneMetadata: usersPkPhoneMetadata, idGenerator: generator}, nil
 }
 
 func (r Repository) NewUser(user domain.User) (err error) {
@@ -85,7 +86,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 	case true:
 		return
 	}
-	err = r.metadata.NewRecord(data, batch)
+	err = r.usersMetadata.NewRecord(data, batch)
 	switch err != nil {
 	case true:
 		return
@@ -98,7 +99,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 func (r Repository) UpdateUsername(id string, username string) (err error) {
 	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
 	data := map[string]interface{}{"username": username}
-	err = r.metadata.UpdateRecord(map[string]interface{}{"id": id}, data, batch)
+	err = r.usersMetadata.UpdateRecord(map[string]interface{}{"id": id}, data, batch)
 	switch err != nil {
 	case true:
 		return
@@ -108,9 +109,9 @@ func (r Repository) UpdateUsername(id string, username string) (err error) {
 	return
 }
 
-func (r Repository) DeleteUser(id string) (err error) {
+func (r Repository) DeleteUser(phone string) (err error) {
 	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
-	err = r.metadata.DeleteRecord(map[string]interface{}{"id": id}, batch)
+	err = r.usersMetadata.DeleteRecord(map[string]interface{}{"id": id}, batch)
 	switch err != nil {
 	case true:
 		return
