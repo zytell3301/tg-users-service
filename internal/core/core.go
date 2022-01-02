@@ -12,8 +12,11 @@ func NewUsersCore(repository UsersRepository) Service {
 	}
 }
 
-// @TODO it must be checked whether the user already exists or not
 func (s Service) NewUser(user domain.User) (err error) {
+	switch s.repository.DoesUserExists(user.Phone) {
+	case true:
+		return UserAlreadyExists{}
+	}
 	err = s.repository.NewUser(user)
 	switch err != nil {
 	case true:
