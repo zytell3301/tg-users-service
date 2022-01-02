@@ -111,7 +111,7 @@ func (r Repository) UpdateUsername(id string, username string) (err error) {
 
 func (r Repository) DeleteUser(phone string) (err error) {
 	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
-	err = r.usersMetadata.DeleteRecord(map[string]interface{}{"id": id}, batch)
+	err = r.usersPkPhoneMetadata.DeleteRecord(map[string]interface{}{"phone": phone}, batch)
 	switch err != nil {
 	case true:
 		return
