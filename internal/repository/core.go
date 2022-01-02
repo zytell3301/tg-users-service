@@ -32,6 +32,19 @@ var usersMetadata = cassandraQB.TableMetadata{
 	Connection: nil,
 }
 
+var usersPkPhoneMetadata = cassandraQB.TableMetadata{
+	Keyspace: "tg",
+	Pk:       map[string]struct{}{"phone": {}},
+	Table:    "users_pk_phone",
+	Columns: map[string]struct{}{
+		"id":       {},
+		"phone":    {},
+		"lastname": {},
+		"bio":      {},
+		"username": {},
+	},
+}
+
 func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generator.Generator) (Repository, error) {
 	connection := cassandraQB.Connection{
 		Cluster: gocql.NewCluster(hosts...),
