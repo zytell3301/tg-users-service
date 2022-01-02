@@ -6,6 +6,7 @@ import (
 	"github.com/zytell3301/cassandra-query-builder"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	uuid_generator "github.com/zytell3301/uuid-generator"
+	"time"
 )
 
 type Repository struct {
@@ -190,6 +191,30 @@ func (r Repository) DoesUserExists(phone string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (r Repository) getUserByUsername(username string) (domain.User, error) {
+	user, err := r.usersPkUsernameMetadata.GetRecord(map[string]interface{}{"username": username}, []string{"id"})
+	switch err != nil {
+	case true:
+		return domain.User{}, err
+	}
+	id := user["id"].(gocql.UUID)
+	u, err := r.usersMetadata.GetRecord(map[string]interface{}{"id": id.String()}, []string{"*"})
+	switch err != nil {
+	case true:
+		return domain.User{}, err
+	}
+	return domain.User{
+		Id:            u["id"].(string),
+		Name:          u["name"].(string),
+		Lastname:      u["lastname"].(string),
+		Bio:           u["bio"].(string),
+		Username:      username,
+		Phone:         u["phone"].(string),
+		Online_status: u["online_status"].(bool),
+		Created_at:    u["created_at"].(time.Time),
+	}, nil
 }
 
 func (r Repository) getUserByPhone(phone string) (domain.User, error) {
