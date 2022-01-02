@@ -193,6 +193,21 @@ func (r Repository) DoesUserExists(phone string) (bool, error) {
 	return true, nil
 }
 
+func (r Repository) DoesUsernameExists(username string) (bool, error) {
+	_, err := r.getIdByUsername(username)
+	switch err != nil {
+	case true:
+		switch errors.Is(err, gocql.ErrNotFound) {
+		case true:
+			return false, nil
+		default:
+			return false, err
+		}
+	default:
+		return true, nil
+	}
+}
+
 func (r Repository) getIdByUsername(username string) (string, error) {
 	user, err := r.usersPkUsernameMetadata.GetRecord(map[string]interface{}{"username": username}, []string{"id"})
 	switch err != nil {
