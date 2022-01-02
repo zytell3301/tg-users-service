@@ -33,6 +33,7 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	switch err != nil {
 	case true:
 		// @TODO return internal error when global errors package implemented
+		// @TODO error must be reported to central error recorder
 	}
 	switch doesExists {
 	case true:
