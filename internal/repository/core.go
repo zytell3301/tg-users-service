@@ -119,3 +119,15 @@ func (r Repository) DeleteUser(phone string) (err error) {
 
 	return r.connection.Session.ExecuteBatch(batch)
 }
+
+func (r Repository) getUserByPhone(phone string) (domain.User, error) {
+	user, err := r.usersPkPhoneMetadata.GetRecord(map[string]interface{}{"phone": phone}, []string{"*"})
+	return domain.User{
+		Id:       user["id"].(string),
+		Name:     user["name"].(string),
+		Lastname: user["lastname"].(string),
+		Bio:      user["lastname"].(string),
+		Username: user["username"].(string),
+		Phone:    phone,
+	}, err
+}
