@@ -3,8 +3,8 @@ package core
 import "github.com/zytell3301/tg-users-service/internal/domain"
 
 type UsersRepository interface {
-	NewUser(domain.User) error
-	UpdateUsername(string, string) error
-	DeleteUser(string) error
-	DoesUserExists(string) error
+	NewUser(user domain.User) error
+	UpdateUsername(phone string, username string) error
+	DeleteUser(phone string) error
+	DoesUserExists(phone string) error
 }
