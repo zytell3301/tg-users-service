@@ -9,10 +9,11 @@ import (
 )
 
 type Repository struct {
-	usersMetadata        cassandraQB.TableMetadata
-	usersPkPhoneMetadata cassandraQB.TableMetadata
-	connection           cassandraQB.Connection
-	idGenerator          *uuid_generator.Generator
+	usersMetadata           cassandraQB.TableMetadata
+	usersPkPhoneMetadata    cassandraQB.TableMetadata
+	usersPkUsernameMetadata cassandraQB.TableMetadata
+	connection              cassandraQB.Connection
+	idGenerator             *uuid_generator.Generator
 }
 
 var usersMetadata = cassandraQB.TableMetadata{
@@ -47,6 +48,16 @@ var usersPkPhoneMetadata = cassandraQB.TableMetadata{
 	},
 }
 
+var usersPkUsernameMetadata = cassandraQB.TableMetadata{
+	Keyspace: "tg",
+	Pk:       map[string]struct{}{"username": {}},
+	Table:    "users_pk_username",
+	Columns: map[string]struct{}{
+		"id":       {},
+		"username": {},
+	},
+}
+
 func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generator.Generator) (Repository, error) {
 	connection := cassandraQB.Connection{
 		Cluster: gocql.NewCluster(hosts...),
@@ -63,7 +74,13 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 	connection.Session = session
 	usersMetadata.Connection = connection.Session
 
-	return Repository{connection: connection, usersMetadata: usersMetadata, usersPkPhoneMetadata: usersPkPhoneMetadata, idGenerator: generator}, nil
+	return Repository{
+		connection:              connection,
+		usersMetadata:           usersMetadata,
+		usersPkPhoneMetadata:    usersPkPhoneMetadata,
+		usersPkUsernameMetadata: usersPkUsernameMetadata,
+		idGenerator:             generator,
+	}, nil
 }
 
 func (r Repository) NewUser(user domain.User) (err error) {
