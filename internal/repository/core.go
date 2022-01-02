@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/gocql/gocql"
 	"github.com/zytell3301/cassandra-query-builder"
 	"github.com/zytell3301/tg-users-service/internal/domain"
@@ -138,6 +139,11 @@ check for the returned data
 */
 func (r Repository) DoesUserExists(phone string) (bool, error) {
 	_, err := r.getUserByPhone(phone)
+
+	switch errors.Is(err, gocql.ErrNotFound) {
+	case true:
+		return false, nil
+	}
 	switch err != nil {
 	case true:
 		return false, err
