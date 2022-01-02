@@ -193,27 +193,35 @@ func (r Repository) DoesUserExists(phone string) (bool, error) {
 	return true, nil
 }
 
-func (r Repository) getUserByUsername(username string) (domain.User, error) {
+func (r Repository) getIdByUsername(username string) (string, error) {
 	user, err := r.usersPkUsernameMetadata.GetRecord(map[string]interface{}{"username": username}, []string{"id"})
+	switch err != nil {
+	case true:
+		return "", err
+	}
+	return user["id"].(gocql.UUID).String(), nil
+}
+
+func (r Repository) getUserByUsername(username string) (domain.User, error) {
+	id, err := r.getIdByUsername(username)
 	switch err != nil {
 	case true:
 		return domain.User{}, err
 	}
-	id := user["id"].(gocql.UUID)
-	u, err := r.usersMetadata.GetRecord(map[string]interface{}{"id": id.String()}, []string{"*"})
+	user, err := r.usersMetadata.GetRecord(map[string]interface{}{"id": id}, []string{"*"})
 	switch err != nil {
 	case true:
 		return domain.User{}, err
 	}
 	return domain.User{
-		Id:            u["id"].(string),
-		Name:          u["name"].(string),
-		Lastname:      u["lastname"].(string),
-		Bio:           u["bio"].(string),
+		Id:            user["id"].(string),
+		Name:          user["name"].(string),
+		Lastname:      user["lastname"].(string),
+		Bio:           user["bio"].(string),
 		Username:      username,
-		Phone:         u["phone"].(string),
-		Online_status: u["online_status"].(bool),
-		Created_at:    u["created_at"].(time.Time),
+		Phone:         user["phone"].(string),
+		Online_status: user["online_status"].(bool),
+		Created_at:    user["created_at"].(time.Time),
 	}, nil
 }
 
