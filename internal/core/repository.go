@@ -6,5 +6,5 @@ type UsersRepository interface {
 	NewUser(user domain.User) error
 	UpdateUsername(phone string, username string) error
 	DeleteUser(phone string) error
-	DoesUserExists(phone string) error
+	DoesUserExists(phone string) bool
 }
