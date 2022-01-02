@@ -109,10 +109,22 @@ func (r Repository) NewUser(user domain.User) (err error) {
 	return
 }
 
-func (r Repository) UpdateUsername(id string, username string) (err error) {
+func (r Repository) UpdateUsername(phone string, username string) (err error) {
 	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
-	data := map[string]interface{}{"username": username}
-	err = r.usersMetadata.UpdateRecord(map[string]interface{}{"id": id}, data, batch)
+	user, err := r.getUserByPhone(phone)
+
+	switch err != nil {
+	case true:
+		return
+	}
+
+	err = r.usersPkPhoneMetadata.UpdateRecord(map[string]interface{}{"phone": phone}, map[string]interface{}{"username": username}, batch)
+	switch err != nil {
+	case true:
+		return
+	}
+
+	err = r.usersMetadata.UpdateRecord(map[string]interface{}{"id": user.Id}, map[string]interface{}{"username": username}, batch)
 	switch err != nil {
 	case true:
 		return
