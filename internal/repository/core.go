@@ -132,6 +132,10 @@ func (r Repository) DeleteUser(phone string) (err error) {
 	return r.connection.Session.ExecuteBatch(batch)
 }
 
+/**
+gocql package will default return a not found error and it is not needed to
+check for the returned data
+*/
 func (r Repository) DoesUserExists(phone string) (bool, error) {
 	_, err := r.getUserByPhone(phone)
 	switch err != nil {
