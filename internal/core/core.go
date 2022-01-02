@@ -12,8 +12,10 @@ func NewUsersCore(repository UsersRepository) Service {
 	}
 }
 
+// @TODO an error must be returned if an error encountered while checking for existing user. A global package must be created for this purpose
 func (s Service) NewUser(user domain.User) (err error) {
-	switch s.repository.DoesUserExists(user.Phone) {
+	doesExists, err := s.repository.DoesUserExists(user.Phone)
+	switch doesExists {
 	case true:
 		return UserAlreadyExists{}
 	}
