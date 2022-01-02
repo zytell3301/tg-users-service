@@ -52,7 +52,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 }
 
 func (r Repository) NewUser(user domain.User) (err error) {
-	batch := r.connection.Session.NewBatch(gocql.LoggedBatch)
+	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
 	id, err := r.idGenerator.GenerateV4()
 	switch err != nil {
 	case true:
@@ -83,7 +83,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 }
 
 func (r Repository) UpdateUsername(id string, username string) (err error) {
-	batch := r.connection.Session.NewBatch(gocql.LoggedBatch)
+	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
 	data := map[string]interface{}{"username": username}
 	err = r.metadata.UpdateRecord(map[string]interface{}{"id": id}, data, batch)
 	switch err != nil {
