@@ -132,6 +132,15 @@ func (r Repository) DeleteUser(phone string) (err error) {
 	return r.connection.Session.ExecuteBatch(batch)
 }
 
+func (r Repository) DoesUserExists(phone string) (bool, error) {
+	_, err := r.getUserByPhone(phone)
+	switch err != nil {
+	case true:
+		return false, err
+	}
+	return true, nil
+}
+
 func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 	user, err := r.usersPkPhoneMetadata.GetRecord(map[string]interface{}{"phone": phone}, []string{"*"})
 	return domain.User{
