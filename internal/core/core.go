@@ -28,8 +28,16 @@ func (s Service) NewUser(user domain.User) (err error) {
 	return
 }
 
-// @TODO check if the username already exists or not
 func (s Service) UpdateUsername(phone string, username string) (err error) {
+	doesExists,err := s.repository.DoesUsernameExists(username)
+	switch err != nil {
+	case true:
+		// @TODO return internal error when global errors package implemented
+	}
+	switch doesExists {
+	case true:
+		return UsernameAlreadyExists{}
+	}
 	err = s.repository.UpdateUsername(phone, username)
 	switch err != nil {
 	case true:
