@@ -111,7 +111,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 		return
 	}
 
-	r.usersPkPhoneMetadata.NewRecord(map[string]interface{}{
+	err = r.usersPkPhoneMetadata.NewRecord(map[string]interface{}{
 		"id":       id.String(),
 		"phone":    data["phone"],
 		"lastname": data["lastname"],
