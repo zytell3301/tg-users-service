@@ -254,6 +254,10 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 
 func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 	user, err := r.usersPkPhoneMetadata.GetRecord(map[string]interface{}{"phone": phone}, []string{"*"})
+	switch err != nil {
+	case true:
+		return domain.User{}, err
+	}
 	return domain.User{
 		Id:       user["id"].(gocql.UUID).String(),
 		Name:     user["name"].(string),
