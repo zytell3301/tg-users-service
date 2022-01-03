@@ -68,7 +68,7 @@ func TestRepository_DeleteUser2(t *testing.T) {
 
 func TestRepository_UpdateUsername(t *testing.T) {
 	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
-	err := repo.UpdateUsername("+09999999999", "test_username")
+	err := repo.UpdateUsername(dummyUser.Phone, "test_username")
 	switch err != nil {
 	case true:
 		t.Errorf("Expected method UpdateUsername to succeed but error returned. Error message: %v", err)
