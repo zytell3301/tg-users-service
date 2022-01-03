@@ -43,6 +43,7 @@ var usersPkPhoneMetadata = cassandraQB.TableMetadata{
 	Columns: map[string]struct{}{
 		"id":       {},
 		"phone":    {},
+		"name":     {},
 		"lastname": {},
 		"bio":      {},
 		"username": {},
