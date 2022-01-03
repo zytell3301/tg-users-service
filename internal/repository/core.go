@@ -157,7 +157,19 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 		return
 	}
 
-	err = r.usersPkUsernameMetadata.UpdateRecord(map[string]interface{}{"username": user.Username}, map[string]interface{}{"username": username}, batch)
+	err = r.usersPkUsernameMetadata.DeleteRecord(map[string]interface{}{"username": user.Username}, batch)
+	switch err != nil {
+	case true:
+		return
+	}
+	err = r.connection.Session.ExecuteBatch(batch)
+	switch err != nil {
+	case true:
+		return
+	}
+
+	batch = r.connection.Session.NewBatch(gocql.UnloggedBatch)
+	err = r.usersPkUsernameMetadata.NewRecord(map[string]interface{}{"username": username, "id": user.Id}, batch)
 	switch err != nil {
 	case true:
 		return
