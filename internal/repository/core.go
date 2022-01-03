@@ -148,6 +148,12 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 		return
 	}
 
+	err = r.usersPkUsernameMetadata.UpdateRecord(map[string]interface{}{"username": user.Username}, map[string]interface{}{"username": username}, batch)
+	switch err != nil {
+	case true:
+		return
+	}
+
 	err = r.connection.Session.ExecuteBatch(batch)
 	return
 }
