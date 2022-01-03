@@ -123,6 +123,12 @@ func (r Repository) NewUser(user domain.User) (err error) {
 	case true:
 		return
 	}
+
+	err = r.usersPkUsernameMetadata.NewRecord(map[string]interface{}{"id": id.String(), "username": user.Username}, batch)
+	switch err != nil {
+	case true:
+		return
+	}
 	err = r.connection.Session.ExecuteBatch(batch)
 	return
 }
