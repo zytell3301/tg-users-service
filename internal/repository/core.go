@@ -235,7 +235,7 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 		return domain.User{}, err
 	}
 	return domain.User{
-		Id:            user["id"].(string),
+		Id:            user["id"].(gocql.UUID).String(),
 		Name:          user["name"].(string),
 		Lastname:      user["lastname"].(string),
 		Bio:           user["bio"].(string),
@@ -249,7 +249,7 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 	user, err := r.usersPkPhoneMetadata.GetRecord(map[string]interface{}{"phone": phone}, []string{"*"})
 	return domain.User{
-		Id:       user["id"].(string),
+		Id:       user["id"].(gocql.UUID).String(),
 		Name:     user["name"].(string),
 		Lastname: user["lastname"].(string),
 		Bio:      user["lastname"].(string),
