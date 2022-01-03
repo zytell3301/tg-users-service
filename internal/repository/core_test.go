@@ -48,35 +48,6 @@ func TestRepository_NewUser(t *testing.T) {
 	}
 }
 
-func TestRepository_UpdateUser(t *testing.T) {
-	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
-	err := repo.UpdateUser(domain.User{
-		Id: dummyUserId,
-	})
-	switch err != nil {
-	case true:
-		t.Errorf("An error encountered while updating an exsiting user. Error: %v", err)
-	}
-}
-
-func TestRepository_UpdateUser2(t *testing.T) {
-	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
-	err := repo.UpdateUser(domain.User{
-		Id:            dummyUserId,
-		Name:          "Test name",
-		Lastname:      "Test lastname",
-		Bio:           "Test bio",
-		Username:      "Test username",
-		Phone:         "Test phone",
-		Online_status: false,
-		Created_at:    time.Now().AddDate(1, 1, 1),
-	})
-	switch err != nil {
-	case true:
-		t.Errorf("An error encountered while updating an existing user. Error: %v", err)
-	}
-}
-
 func TestRepository_DeleteUser(t *testing.T) {
 	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
 	err := repo.DeleteUser(dummyUserId)
