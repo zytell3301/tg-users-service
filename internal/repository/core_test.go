@@ -58,7 +58,7 @@ func TestRepository_DeleteUser(t *testing.T) {
 }
 
 func TestRepository_DeleteUser2(t *testing.T) {
-	repo,_ := NewUsersRepository(hosts,keyspace,idGenerator)
+	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
 	err := repo.DeleteUser("")
 	switch err == nil {
 	case true:
