@@ -280,5 +280,5 @@ func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 		Bio:      user["lastname"].(string),
 		Username: user["username"].(string),
 		Phone:    phone,
-	}, err
+	}, nil
 }
