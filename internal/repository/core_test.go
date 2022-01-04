@@ -50,7 +50,7 @@ func TestRepository_NewUser(t *testing.T) {
 
 func TestRepository_DeleteUser(t *testing.T) {
 	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
-	err := repo.DeleteUser(dummyUserId)
+	err := repo.DeleteUser(dummyUser.Phone)
 	switch err != nil {
 	case true:
 		t.Errorf("An error encountered while deleting an existing user. Error: %v", err)
