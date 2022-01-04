@@ -48,6 +48,15 @@ func TestRepository_NewUser(t *testing.T) {
 	}
 }
 
+func TestRepository_UpdateUsername(t *testing.T) {
+	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
+	err := repo.UpdateUsername(dummyUser.Phone, "test_username")
+	switch err != nil {
+	case true:
+		t.Errorf("Expected method UpdateUsername to succeed but error returned. Error message: %v", err)
+	}
+}
+
 func TestRepository_DeleteUser(t *testing.T) {
 	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
 	err := repo.DeleteUser(dummyUser.Phone)
@@ -63,14 +72,5 @@ func TestRepository_DeleteUser2(t *testing.T) {
 	switch err == nil {
 	case true:
 		t.Error("Expected method DeleteUser to return error but no error returned")
-	}
-}
-
-func TestRepository_UpdateUsername(t *testing.T) {
-	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
-	err := repo.UpdateUsername(dummyUser.Phone, "test_username")
-	switch err != nil {
-	case true:
-		t.Errorf("Expected method UpdateUsername to succeed but error returned. Error message: %v", err)
 	}
 }
