@@ -1,53 +1,48 @@
 package core
 
-type derror struct {
-	Message string
-	Code    uint32
-}
+import (
+	"github.com/zytell3301/tg-globals/errors"
+)
 
 type UserAlreadyExists struct {
-	derror
+	errors.Derror
 }
 
 type UserNotFound struct {
-	derror
+	errors.Derror
 }
 
 type UsernameAlreadyExists struct {
-	derror
+	errors.Derror
 }
 
 type UsernameTooShort struct {
-	derror
+	errors.Derror
 }
 
 var (
 	UserAlreadyExistsError = UserAlreadyExists{
-		derror{
+		errors.Derror{
 			Message: "user already exists",
 			Code:    1,
 		},
 	}
 	UserNotFoundError = UserNotFound{
-		derror{
+		errors.Derror{
 			Message: "user not found",
 			Code:    1,
 		},
 	}
 	UsernameAlreadyExistsError = UsernameAlreadyExists{
-		derror{
+		errors.Derror{
 			Message: "username already exists",
 			Code:    1,
 		},
 	}
 	UsernameTooShortError = UsernameTooShort{
-		derror{
+		errors.Derror{
 			Message: "username too short",
 			Code:    2,
 		},
 	}
 )
-
-func (e derror) Error() string {
-	return e.Message
-}
