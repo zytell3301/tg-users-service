@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/gocql/gocql v0.0.0-20211222173705-d73e6b1002a7
+	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/zytell3301/cassandra-query-builder v0.0.0-20220103235333-1de214bffd73
