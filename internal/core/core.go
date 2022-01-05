@@ -36,11 +36,11 @@ func (s Service) NewUser(user domain.User) (err error) {
 }
 
 func (s Service) UpdateUsername(phone string, username string) (err error) {
-	doesExists,err := s.repository.DoesUsernameExists(username)
+	doesExists, err := s.repository.DoesUsernameExists(username)
 	switch err != nil {
 	case true:
-		// @TODO return internal error when global errors package implemented
 		// @TODO error must be reported to central error recorder
+		return errors.InternalError{}
 	}
 	switch doesExists {
 	case true:
@@ -50,6 +50,7 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	switch err != nil {
 	case true:
 		// @TODO once the logger service implemented, this part must report the error to logger service
+		return errors.InternalError{}
 	}
 
 	return
@@ -60,6 +61,7 @@ func (s Service) DeleteUser(phone string) (err error) {
 	switch err != nil {
 	case true:
 		// @TODO once the logger service implemented, this part must report the error to logger service
+		return errors.InternalError{}
 	}
 
 	return
