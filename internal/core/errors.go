@@ -24,25 +24,25 @@ var (
 	UserAlreadyExistsError = UserAlreadyExists{
 		errors.Derror{
 			Message: "user already exists",
-			Code:    1,
+			Code:    2,
 		},
 	}
 	UserNotFoundError = UserNotFound{
 		errors.Derror{
 			Message: "user not found",
-			Code:    1,
+			Code:    3,
 		},
 	}
 	UsernameAlreadyExistsError = UsernameAlreadyExists{
 		errors.Derror{
 			Message: "username already exists",
-			Code:    1,
+			Code:    4,
 		},
 	}
 	UsernameTooShortError = UsernameTooShort{
 		errors.Derror{
 			Message: "username too short",
-			Code:    2,
+			Code:    5,
 		},
 	}
 )
