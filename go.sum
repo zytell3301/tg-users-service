@@ -73,6 +73,8 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/zytell3301/cassandra-query-builder v0.0.0-20220103235333-1de214bffd73 h1:MLDdpa59t1mhRiE/8WapgASxrttUvzNLTiMNjDAEgt8=
 github.com/zytell3301/cassandra-query-builder v0.0.0-20220103235333-1de214bffd73/go.mod h1:lifWt8Oe1PPWf9kw/8uonFAz7v9QaAxPH4Z9Vbrm+Zk=
+github.com/zytell3301/tg-globals v0.0.0-20220105225912-8a5b6ea055b0 h1:9wzIU8AkURQg+X0EbvEON4DHq4FSQzz/xy8SQD69Ttk=
+github.com/zytell3301/tg-globals v0.0.0-20220105225912-8a5b6ea055b0/go.mod h1:JbNFEJEqy+L2Xl1ubcTpst2VUU2HvXqniKIHgukCcRM=
 github.com/zytell3301/uuid-generator v0.0.0-20211105141829-f5b70d07ddec/go.mod h1:qLqL0VUqTxC+Awbn/Twa3dEIwt2GBRb10fstB3WfF+Q=
 github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad h1:QAYaDR7faTp/GHkk84qM7wOKVrxwEV8W6qvilh10/JQ=
 github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad/go.mod h1:qLqL0VUqTxC+Awbn/Twa3dEIwt2GBRb10fstB3WfF+Q=
