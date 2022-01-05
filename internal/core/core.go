@@ -1,6 +1,9 @@
 package core
 
-import "github.com/zytell3301/tg-users-service/internal/domain"
+import (
+	"github.com/zytell3301/tg-globals/errors"
+	"github.com/zytell3301/tg-users-service/internal/domain"
+)
 
 type Service struct {
 	repository UsersRepository
@@ -16,8 +19,8 @@ func (s Service) NewUser(user domain.User) (err error) {
 	doesExists, err := s.repository.DoesUserExists(user.Phone)
 	switch err != nil {
 	case true:
-		// @TODO return internal error when global errors package implemented
 		// @TODO report error to central error recorder
+		return errors.InternalError{}
 	}
 	switch doesExists {
 	case true:
