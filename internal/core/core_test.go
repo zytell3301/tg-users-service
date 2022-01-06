@@ -6,6 +6,14 @@ import (
 	"testing"
 )
 
+var user = domain.User{
+	Name:     "Arshiya",
+	Lastname: "Kiani",
+	Bio:      "This is an awesome test for bio",
+	Username: "aCoolUsername",
+	Phone:    "+0000000000",
+}
+
 /*
  * Normal case test
  */
@@ -13,13 +21,6 @@ func TestService_NewUser(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 	repositoryMock := NewMockUsersRepository(controller)
-	user := domain.User{
-		Name:     "Arshiya",
-		Lastname: "Kiani",
-		Bio:      "This is an awesome test for bio",
-		Username: "aCoolUsername",
-		Phone:    "+0000000000",
-	}
 	repositoryMock.EXPECT().NewUser(user)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone)
 
@@ -32,4 +33,3 @@ func TestService_NewUser(t *testing.T) {
 		t.Errorf("Expected NewUser to succeed but error returned. Error: %v", err)
 	}
 }
-
