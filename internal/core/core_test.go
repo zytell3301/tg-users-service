@@ -33,3 +33,10 @@ func TestService_NewUser(t *testing.T) {
 		t.Errorf("Expected NewUser to succeed but error returned. Error: %v", err)
 	}
 }
+
+/*
+ * Test case for phone number duplication
+ */
+func TestService_NewUser2(t *testing.T) {
+
+}
