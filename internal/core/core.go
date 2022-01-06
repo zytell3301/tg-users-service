@@ -26,7 +26,11 @@ func (s Service) NewUser(user domain.User) (err error) {
 	case true:
 		return UserAlreadyExists{}
 	}
-	err = s.repository.NewUser(user)
+	err = s.repository.NewUser(domain.User{
+		Name:     user.Name,
+		Lastname: user.Username,
+		Phone:    user.Phone,
+	})
 	switch err != nil {
 	case true:
 		// @TODO once the logger service implemented, this part must report the error to logger service
