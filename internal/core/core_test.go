@@ -6,6 +6,9 @@ import (
 	"testing"
 )
 
+/*
+ * Normal case test
+ */
 func TestService_NewUser(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
@@ -29,3 +32,4 @@ func TestService_NewUser(t *testing.T) {
 		t.Errorf("Expected NewUser to succeed but error returned. Error: %v", err)
 	}
 }
+
