@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	"github.com/golang/mock/gomock"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"testing"
@@ -38,5 +39,17 @@ func TestService_NewUser(t *testing.T) {
  * Test case for phone number duplication
  */
 func TestService_NewUser2(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	repositoryMock := NewMockUsersRepository(controller)
+	repositoryMock.EXPECT().NewUser(user).AnyTimes()
+	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(true, nil)
 
+	core := NewUsersCore(repositoryMock)
+
+	err := core.NewUser(user)
+	switch err == nil || !errors.As(err, &UserAlreadyExists{}) {
+	case true:
+		t.Errorf("Expected NewUser to return error but no error returned")
+	}
 }
