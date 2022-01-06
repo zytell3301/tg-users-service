@@ -33,6 +33,7 @@ func (s Service) NewUser(user domain.User) (err error) {
 	})
 	switch err != nil {
 	case true:
+		return errors.InternalError{}
 		// @TODO once the logger service implemented, this part must report the error to logger service
 	}
 
