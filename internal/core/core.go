@@ -28,7 +28,7 @@ func (s Service) NewUser(user domain.User) (err error) {
 	}
 	err = s.repository.NewUser(domain.User{
 		Name:     user.Name,
-		Lastname: user.Username,
+		Lastname: user.Lastname,
 		Phone:    user.Phone,
 	})
 	switch err != nil {
