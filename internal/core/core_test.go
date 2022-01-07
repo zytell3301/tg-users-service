@@ -162,7 +162,7 @@ func TestService_UpdateUsername3(t *testing.T) {
 	}
 	switch errors.As(err, &errors2.InternalError{}) {
 	case false:
-		t.Errorf("Proper error not returned from UpdateUsername. Expected UpdateUsername to return UsernameAlreadyExists error")
+		t.Errorf("Proper error not returned from UpdateUsername. Expected UpdateUsername to return InternalError error")
 	}
 }
 
