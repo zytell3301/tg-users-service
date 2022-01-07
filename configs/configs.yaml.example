@@ -1,0 +1,6 @@
+# This is the ip of the server that will be used for several
+# purposes like grpc server ip and etc.
+node-ip:
+
+# Service port is used for grpc server
+service-port:
