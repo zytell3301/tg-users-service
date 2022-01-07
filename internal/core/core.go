@@ -24,7 +24,7 @@ func (s Service) NewUser(user domain.User) (err error) {
 	}
 	switch doesExists {
 	case true:
-		return UsernameAlreadyExists{}
+		return UserAlreadyExists{}
 	}
 	err = s.repository.NewUser(domain.User{
 		Name:     user.Name,
