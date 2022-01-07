@@ -15,6 +15,7 @@ var user = domain.User{
 }
 
 var newUsername = "NewUsername"
+var dummyError = errors.New("")
 
 func newController(t *testing.T) *gomock.Controller {
 	return gomock.NewController(t)
@@ -66,7 +67,7 @@ func TestService_NewUser3(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
 	repositoryMock := NewMockUsersRepository(controller)
-	repositoryMock.EXPECT().NewUser(user).Return(errors.New(""))
+	repositoryMock.EXPECT().NewUser(user).Return(dummyError)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
 
 	core := NewUsersCore(repositoryMock)
