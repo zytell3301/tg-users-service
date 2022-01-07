@@ -14,6 +14,8 @@ var user = domain.User{
 	Phone:    "+0000000000",
 }
 
+var newUsername = "NewUsername"
+
 /*
  * Normal case test
  */
@@ -74,5 +76,24 @@ func TestService_NewUser3(t *testing.T) {
 	switch !errors.As(err, &errors2.InternalError{}) {
 	case true:
 		t.Error("Expected NewUser to return error from type InternalError but error is from different type")
+	}
+}
+
+/**
+ * Normal test case
+ */
+func TestService_UpdateUsername(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	mock := NewMockUsersRepository(controller)
+	mock.EXPECT().DoesUsernameExists(newUsername).Return(false,nil)
+	mock.EXPECT().UpdateUsername(user.Phone, newUsername)
+
+	core := NewUsersCore(mock)
+	err := core.UpdateUsername(user.Phone, newUsername)
+
+	switch err != nil {
+	case true:
+		t.Errorf("Expected UpdateUsername to succeed but error returned instead. Error message: %v", err)
 	}
 }
