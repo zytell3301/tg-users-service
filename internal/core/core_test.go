@@ -123,3 +123,24 @@ func TestService_UpdateUsername2(t *testing.T) {
 		t.Errorf("Proper error not returned from UpdateUsername. Expected UpdateUsername to return USernameAlreadyExists error")
 	}
 }
+
+/**
+ * Test case for internal failure
+ */
+func TestService_UpdateUsername3(t *testing.T) {
+	controller := newController(t)
+	defer controller.Finish()
+	mock := NewMockUsersRepository(controller)
+	mock.EXPECT().DoesUsernameExists(newUsername).Return(false,dummyError)
+
+	core := NewUsersCore(mock)
+	err := core.UpdateUsername(user.Phone,newUsername)
+	switch err == nil {
+	case true:
+		t.Errorf("Expected UpdateUsername to return error but no error returned")
+	}
+	switch errors.As(err, &errors2.InternalError{}) {
+	case false:
+		t.Errorf("Proper error not returned from UpdateUsername. Expected UpdateUsername to return UsernameAlreadyExists error")
+	}
+}
