@@ -101,3 +101,20 @@ func TestService_UpdateUsername(t *testing.T) {
 		t.Errorf("Expected UpdateUsername to succeed but error returned instead. Error message: %v", err)
 	}
 }
+
+/**
+ * Test case for username duplication
+ */
+func TestService_UpdateUsername2(t *testing.T) {
+	controller := newController(t)
+	defer controller.Finish()
+	mock := NewMockUsersRepository(controller)
+	mock.EXPECT().DoesUsernameExists(newUsername).Return(true,nil)
+
+	core:= NewUsersCore(mock)
+	err:= core.UpdateUsername(user.Phone,newUsername)
+	switch err == nil {
+	case true:
+		t.Errorf("Expected UpdateUsername to return error but no error returned")
+	}
+}
