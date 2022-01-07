@@ -85,6 +85,27 @@ func TestService_NewUser3(t *testing.T) {
 }
 
 /**
+ * Test case for internal failure
+ */
+func TestService_NewUser4(t *testing.T) {
+	controller := newController(t)
+	defer controller.Finish()
+	mock := NewMockUsersRepository(controller)
+	mock.EXPECT().DoesUserExists(user.Phone).Return(false,dummyError)
+
+	core := NewUsersCore(mock)
+	err := core.NewUser(user)
+	switch err == nil {
+	case true:
+		t.Errorf("Expected NewUser to return error but no error returned")
+	}
+	switch errors.As(err, &errors2.InternalError{}) {
+	case false:
+		t.Errorf("No proper error returned from NewUser method. Expected NewUser to InternalError error")
+	}
+}
+
+/**
  * Normal test case
  */
 func TestService_UpdateUsername(t *testing.T) {
