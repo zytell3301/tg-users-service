@@ -10,8 +10,6 @@ import (
 var user = domain.User{
 	Name:     "Arshiya",
 	Lastname: "Kiani",
-	Bio:      "This is an awesome test for bio",
-	Username: "aCoolUsername",
 	Phone:    "+0000000000",
 }
 
