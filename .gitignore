@@ -5,3 +5,7 @@
 # central repository for pb files
 # github.com/zytell3301/tg-protos
 api/pb
+
+# An example is included for every configuration file instead
+# of setting examples in original file
+configs/configs.yaml
