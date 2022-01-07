@@ -40,6 +40,7 @@ func (s Service) NewUser(user domain.User) (err error) {
 	return
 }
 
+// @TODO qualify username before processing request
 func (s Service) UpdateUsername(phone string, username string) (err error) {
 	doesExists, err := s.repository.DoesUsernameExists(username)
 	switch err != nil {
