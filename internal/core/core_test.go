@@ -22,7 +22,7 @@ func newController(t *testing.T) *gomock.Controller {
 }
 
 /*
- * Normal case test
+ * test case for normal request
  */
 func TestService_NewUser(t *testing.T) {
 	controller := newController(t)
@@ -106,7 +106,7 @@ func TestService_NewUser4(t *testing.T) {
 }
 
 /**
- * Normal test case
+ * test case for normal request
  */
 func TestService_UpdateUsername(t *testing.T) {
 	controller := newController(t)
