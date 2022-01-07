@@ -16,11 +16,15 @@ var user = domain.User{
 
 var newUsername = "NewUsername"
 
+func newController(t *testing.T) *gomock.Controller {
+	return gomock.NewController(t)
+}
+
 /*
  * Normal case test
  */
 func TestService_NewUser(t *testing.T) {
-	controller := gomock.NewController(t)
+	controller := newController(t)
 	defer controller.Finish()
 	repositoryMock := NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user)
@@ -40,7 +44,7 @@ func TestService_NewUser(t *testing.T) {
  * Test case for phone number duplication
  */
 func TestService_NewUser2(t *testing.T) {
-	controller := gomock.NewController(t)
+	controller := newController(t)
 	defer controller.Finish()
 	repositoryMock := NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user).AnyTimes()
@@ -59,7 +63,7 @@ func TestService_NewUser2(t *testing.T) {
  * Test case for internal failure
  */
 func TestService_NewUser3(t *testing.T) {
-	controller := gomock.NewController(t)
+	controller := newController(t)
 	defer controller.Finish()
 	repositoryMock := NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user).Return(errors.New(""))
@@ -83,7 +87,7 @@ func TestService_NewUser3(t *testing.T) {
  * Normal test case
  */
 func TestService_UpdateUsername(t *testing.T) {
-	controller := gomock.NewController(t)
+	controller := newController(t)
 	defer controller.Finish()
 	mock := NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false,nil)
