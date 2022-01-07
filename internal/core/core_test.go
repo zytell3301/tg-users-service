@@ -204,3 +204,25 @@ func TestService_DeleteUser(t *testing.T) {
 		t.Errorf("Expected DeleteUser to succeed but error returned. Error message: %v", err)
 	}
 }
+
+/**
+ * test case for internal failure
+ */
+func TestService_DeleteUser2(t *testing.T) {
+	controller := newController(t)
+	defer controller.Finish()
+	mock := NewMockUsersRepository(controller)
+	mock.EXPECT().DeleteUser(user.Phone).Return(dummyError)
+
+	core := NewUsersCore(mock)
+	err := core.DeleteUser(user.Phone)
+
+	switch err == nil {
+	case true:
+		t.Errorf("Expected DeleteUser to return error but no error returned")
+	}
+	switch errors.As(err,&errors2.InternalError{}) {
+	case false:
+		t.Errorf("Proper error not returned from DeleteUser. Expected DeleteUSer to return InternalError error")
+	}
+}
