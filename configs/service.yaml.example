@@ -4,3 +4,6 @@ node-ip:
 
 # Service port is used for grpc server
 service-port:
+
+# This will be used for generating some king of uuids like v5
+uuid-space:
