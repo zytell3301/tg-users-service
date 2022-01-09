@@ -1,0 +1,5 @@
+# An array of cassandra node ips
+hosts:
+
+# Keyspace that will be used by repository
+keyspace:
