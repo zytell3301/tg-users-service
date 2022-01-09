@@ -9,12 +9,13 @@ const ProjectRoot = "./.."
 
 type configs struct {
 	repositoryConfigs repositoryConfigs
-	serviceConfigs serviceConfigs
+	serviceConfigs    serviceConfigs
 }
 
 type serviceConfigs struct {
 	nodeIp      string
 	servicePort string
+	uuidSpace   string
 }
 
 type repositoryConfigs struct {
