@@ -19,6 +19,12 @@ type Handler struct {
  * error core 0 indicates that the operation completed successfully with no error in all handlers
  */
 
+func NewHandler(service core.Service) Handler {
+	return Handler{
+		core: service,
+	}
+}
+
 func (h Handler) NewUser(ctx context.Context, user *UsersService.User) (*error1.Error, error) {
 	err := h.core.NewUser(domain.User{
 		Name:       user.Name,
