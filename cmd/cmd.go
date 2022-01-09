@@ -44,8 +44,12 @@ func main() {
 	grpcHandler := grpcHandlers.NewHandler(usersCore)
 	listener, err := net.Listen("tcp", configs.serviceConfigs.nodeIp+":"+configs.serviceConfigs.servicePort)
 	grpcServer := grpc.NewServer()
-	UsersService.RegisterUsersServiceServer(grpcServer,grpcHandler)
-	grpcServer.Serve(listener)
+	UsersService.RegisterUsersServiceServer(grpcServer, grpcHandler)
+	err = grpcServer.Serve(listener)
+	switch err != nil {
+	case true:
+		log.Fatalf("An error occurred while starting grpc servcice. Error message: %v", err)
+	}
 }
 
 func loadConfig(config string) *viper.Viper {
