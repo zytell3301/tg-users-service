@@ -51,7 +51,7 @@ func main() {
 func loadConfig(config string) *viper.Viper {
 	cfg := viper.New()
 	cfg.AddConfigPath(ProjectRoot + "/configs")
-	cfg.SetConfigName("configs")
+	cfg.SetConfigName(config)
 	cfg.SetConfigType("yaml")
 	err := cfg.ReadInConfig()
 	switch err != nil {
