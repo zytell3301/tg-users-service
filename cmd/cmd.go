@@ -1,5 +1,12 @@
 package main
 
+import (
+	"github.com/spf13/viper"
+	"log"
+)
+
+const ProjectRoot = "./.."
+
 type config struct {
 	nodeIp      string
 	servicePort string
@@ -7,4 +14,17 @@ type config struct {
 
 func main() {
 
+}
+
+func loadConfig(config string) *viper.Viper {
+	cfg := viper.New()
+	cfg.AddConfigPath(ProjectRoot + "/configs")
+	cfg.SetConfigName("configs")
+	cfg.SetConfigType("yaml")
+	err := cfg.ReadInConfig()
+	switch err != nil {
+	case true:
+		log.Fatalf("An error occurred while reading configs. Error message: %v", err)
+	}
+	return cfg
 }
