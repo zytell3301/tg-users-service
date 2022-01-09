@@ -46,3 +46,11 @@ func loadRepositoryConfigs() (config repositoryConfigs) {
 	config.keyspace = cfg.GetString("keyspace")
 	return
 }
+
+func loadServiceConfigs() (config serviceConfigs) {
+	cfg := loadConfig("service")
+	config.nodeIp = cfg.GetString("node-ip")
+	config.servicePort = cfg.GetString("service-port")
+	config.uuidSpace = cfg.GetString("uuid-space")
+	return
+}
