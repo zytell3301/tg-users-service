@@ -1,4 +1,4 @@
-module github.copm/zytell3301/tg-users-service
+module github.com/zytell3301/tg-users-service
 
 go 1.16
 
