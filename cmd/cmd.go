@@ -12,6 +12,11 @@ type serviceConfigs struct {
 	servicePort string
 }
 
+type repositoryConfigs struct {
+	hosts    []string
+	keyspace string
+}
+
 func main() {
 
 }
@@ -27,4 +32,11 @@ func loadConfig(config string) *viper.Viper {
 		log.Fatalf("An error occurred while reading configs. Error message: %v", err)
 	}
 	return cfg
+}
+
+func loadRepositoryConfigs() (config repositoryConfigs) {
+	cfg := loadConfig("repository")
+	config.hosts = cfg.GetStringSlice("hosts")
+	config.keyspace = cfg.GetString("keyspace")
+	return
 }
