@@ -7,7 +7,7 @@ import (
 
 const ProjectRoot = "./.."
 
-type config struct {
+type serviceConfigs struct {
 	nodeIp      string
 	servicePort string
 }
