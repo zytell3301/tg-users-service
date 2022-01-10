@@ -41,12 +41,12 @@ func (s Service) NewUser(user domain.User) (err error) {
 	})
 	switch err != nil {
 	case true:
-		return errors.InternalError{}
 		s.ErrorReporter.Report(ErrorReporter.Error{
 			ServiceId:  s.serviceId,
 			InstanceId: s.instanceId,
 			Message:    err.Error(),
 		})
+		return errors.InternalError{}
 	}
 
 	return
