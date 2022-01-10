@@ -23,7 +23,11 @@ func (s Service) NewUser(user domain.User) (err error) {
 	doesExists, err := s.repository.DoesUserExists(user.Phone)
 	switch err != nil {
 	case true:
-		// @TODO report error to central error recorder
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    err.Error(),
+		})
 		return errors.InternalError{}
 	}
 	switch doesExists {
@@ -38,7 +42,11 @@ func (s Service) NewUser(user domain.User) (err error) {
 	switch err != nil {
 	case true:
 		return errors.InternalError{}
-		// @TODO once the logger service implemented, this part must report the error to logger service
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    err.Error(),
+		})
 	}
 
 	return
@@ -49,7 +57,11 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	doesExists, err := s.repository.DoesUsernameExists(username)
 	switch err != nil {
 	case true:
-		// @TODO error must be reported to central error recorder
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    err.Error(),
+		})
 		return errors.InternalError{}
 	}
 	switch doesExists {
@@ -59,7 +71,11 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	err = s.repository.UpdateUsername(phone, username)
 	switch err != nil {
 	case true:
-		// @TODO once the logger service implemented, this part must report the error to logger service
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    err.Error(),
+		})
 		return errors.InternalError{}
 	}
 
@@ -70,7 +86,11 @@ func (s Service) DeleteUser(phone string) (err error) {
 	err = s.repository.DeleteUser(phone)
 	switch err != nil {
 	case true:
-		// @TODO once the logger service implemented, this part must report the error to logger service
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    err.Error(),
+		})
 		return errors.InternalError{}
 	}
 
