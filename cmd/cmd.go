@@ -40,6 +40,10 @@ func main() {
 		log.Fatalf("An error occurred while initiating uuid generator instance. Error message: %v", err)
 	}
 	repo, err := repository.NewUsersRepository(configs.repositoryConfigs.hosts, configs.repositoryConfigs.keyspace, uuidGenerator)
+	switch err != nil {
+	case true:
+		log.Fatalf("An error occurred while creating users repository. Error message: %v", err)
+	}
 	usersCore := core2.NewUsersCore(repo)
 	grpcHandler := grpcHandlers.NewHandler(usersCore)
 	listener, err := net.Listen("tcp", configs.serviceConfigs.nodeIp+":"+configs.serviceConfigs.servicePort)
