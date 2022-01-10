@@ -7,8 +7,10 @@ import (
 )
 
 type Service struct {
-	repository UsersRepository
+	repository    UsersRepository
 	ErrorReporter ErrorReporter.Reporter
+	instanceId    string
+	serviceId     string
 }
 
 func NewUsersCore(repository UsersRepository) Service {
