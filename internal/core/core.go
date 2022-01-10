@@ -1,12 +1,14 @@
 package core
 
 import (
+	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 )
 
 type Service struct {
 	repository UsersRepository
+	ErrorReporter ErrorReporter.Reporter
 }
 
 func NewUsersCore(repository UsersRepository) Service {
