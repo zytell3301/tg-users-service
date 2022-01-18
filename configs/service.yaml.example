@@ -2,6 +2,11 @@
 # purposes like grpc server ip and etc.
 node-ip:
 
+# A unique id that indicates
+service-id:
+
+instance-id:
+
 # Service port is used for grpc server
 service-port:
 
