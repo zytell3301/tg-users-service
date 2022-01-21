@@ -8,5 +8,5 @@ type UsersRepository interface {
 	DeleteUser(phone string) error
 	DoesUserExists(phone string) (bool, error)
 	DoesUsernameExists(username string) (bool, error)
-	RecordSecurityCode(code string) error
+	RecordSecurityCode(phone string, code string) error
 }
