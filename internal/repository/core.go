@@ -13,6 +13,7 @@ type Repository struct {
 	usersMetadata           cassandraQB.TableMetadata
 	usersPkPhoneMetadata    cassandraQB.TableMetadata
 	usersPkUsernameMetadata cassandraQB.TableMetadata
+	securityCodesMetaData   cassandraQB.TableMetadata
 	connection              cassandraQB.Connection
 	idGenerator             *uuid_generator.Generator
 }
@@ -57,6 +58,16 @@ var usersPkUsernameMetadata = cassandraQB.TableMetadata{
 	Columns: map[string]struct{}{
 		"id":       {},
 		"username": {},
+	},
+}
+
+var securityCodesMetaData = cassandraQB.TableMetadata{
+	Keyspace: "tg",
+	Pk:       map[string]struct{}{"phone": {}},
+	Table:    "security_codes",
+	Columns: map[string]struct{}{
+		"phone": {},
+		"code":  {},
 	},
 }
 
