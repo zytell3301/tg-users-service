@@ -1,0 +1,9 @@
+USE tg;
+
+CREATE TABLE IF NOT EXISTS security_codes
+(
+    phone VARCHAR,
+    code  VARCHAR,
+    PRIMARY KEY ( phone )
+) WITH DEFAULT_TIME_TO_LIVE = 600
+   AND GC_GRACE_SECONDS = 600;
