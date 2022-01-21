@@ -1,9 +1,12 @@
 package core
 
 import (
+	"crypto/rand"
 	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
+	"math/big"
+	"strconv"
 )
 
 type Service struct {
@@ -95,4 +98,9 @@ func (s Service) DeleteUser(phone string) (err error) {
 	}
 
 	return
+}
+
+func generateSecurityCode() string {
+	securityCode, _ := rand.Int(rand.Reader,big.NewInt(999999-100000))
+	return strconv.Itoa(int(securityCode.Int64())+100000)
 }
