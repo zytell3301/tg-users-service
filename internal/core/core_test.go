@@ -221,8 +221,25 @@ func TestService_DeleteUser2(t *testing.T) {
 	case true:
 		t.Errorf("Expected DeleteUser to return error but no error returned")
 	}
-	switch errors.As(err,&errors2.InternalError{}) {
+	switch errors.As(err, &errors2.InternalError{}) {
 	case false:
 		t.Errorf("Proper error not returned from DeleteUser. Expected DeleteUSer to return InternalError error")
+	}
+}
+
+/**
+ * Normal test case
+ */
+func TestService_RequestSecurityCode(t *testing.T) {
+	controller := newController(t)
+	defer controller.Finish()
+	mock := NewMockUsersRepository(controller)
+	mock.EXPECT().RecordSecurityCode(user.Phone, gomock.Any()).Return(nil)
+
+	core := NewUsersCore(mock)
+	err := core.RequestSecurityCode(user.Phone)
+	switch err != nil {
+	case true:
+		t.Errorf("Expected RequestSecurityCode method to succeed but an error returned. Error message %v", err)
 	}
 }
