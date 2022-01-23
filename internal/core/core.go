@@ -106,7 +106,11 @@ func (s Service) RequestSecurityCode(phone string) (err error) {
 	err = s.repository.RecordSecurityCode(phone, securityCode)
 	switch err != nil {
 	case true:
-		// @TODO report error to central error service
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    err.Error(),
+		})
 	}
 	return
 }
