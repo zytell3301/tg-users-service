@@ -101,6 +101,16 @@ func (s Service) DeleteUser(phone string) (err error) {
 	return
 }
 
+func (s Service) RequestSecurityCode(phone string) (err error) {
+	securityCode := hashExpression(generateSecurityCode())
+	err = s.repository.RecordSecurityCode(phone, securityCode)
+	switch err != nil {
+	case true:
+		// @TODO report error to central error service
+	}
+	return
+}
+
 func hashExpression(expression string) string {
 	hashedExpression, _ := bcrypt.GenerateFromPassword([]byte(expression), 12)
 	return string(hashedExpression)
