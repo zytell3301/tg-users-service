@@ -306,3 +306,16 @@ func (r Repository) RecordSecurityCode(phone string, code string) (err error) {
 	}
 	return r.connection.Session.ExecuteBatch(batch)
 }
+
+func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
+	securityCode, err := r.securityCodesMetaData.GetRecord(map[string]interface{}{"phone": phone}, []string{"phone", "code", "writetime(code) as created_at"})
+	switch err != nil {
+	case true:
+		return domain.SecurityCode{}, err
+	}
+	return domain.SecurityCode{
+		Phone:        securityCode["phone"].(string),
+		SecurityCode: securityCode["code"].(string),
+		CreatedAt:    securityCode["created_at"].(time.Time),
+	}, nil
+}
