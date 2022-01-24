@@ -8,6 +8,11 @@ import (
 	"testing"
 )
 
+type qualifyUsername_parameter struct {
+	username string
+	expected bool
+}
+
 var user = domain.User{
 	Name:     "Arshiya",
 	Lastname: "Kiani",
@@ -291,4 +296,70 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 	case true:
 		t.Errorf("Expected RequestSecurityCode method to return error but no error returned")
 	}
+}
+
+/**
+ * Test cases for invalid parameters
+ */
+func Test_qualifyUsername(t *testing.T) {
+	parameters := []qualifyUsername_parameter{
+		{
+			// containing space
+			username: "aksdjknz adzxc",
+			expected: false,
+		},
+		{
+			// starting with number
+			username: "1azxsalkc",
+			expected: false,
+		},
+		{
+			// too short
+			username: "zasd",
+			expected: false,
+		},
+		{
+			// starting with number and not containing any character
+			username: "124897124",
+			expected: false,
+		},
+		{
+			// containing invalid character ( @ )
+			username: "@assadklj21",
+			expected: false,
+		},
+		{
+			// containing invalid character ( \ )
+			username: "\\asdlzkxc",
+			expected: false,
+		},
+		{
+			// containing invalid character ( ; )
+			username: "xzl;kasdzxasd",
+			expected: false,
+		},
+		{
+			// containing invalid character ( ! )
+			username: "a!aszcjasd",
+			expected: false,
+		},
+		{
+			// containing invalid character ( $ ; )
+			username: "$askjzasl;sad",
+			expected: false,
+		},
+		{
+			// too long
+			username: "ajskzlao1892jkajdkasdhasiodazcasa",
+			expected: false,
+		},
+	}
+	for _, parameter := range parameters {
+		result := qualifyUsername(parameter.username)
+		switch result != parameter.expected {
+		case true:
+			t.Errorf("Expected qualifyUsername to return false but true returned for invalid username: %v", parameter.username)
+		}
+	}
+
 }
