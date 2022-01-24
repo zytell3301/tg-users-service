@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Service struct {
@@ -91,6 +92,16 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 }
 
 func qualifyUsername(username string) bool {
+	invalidCharacters := []string{
+		"@",
+		"\\",
+	}
+	for _, invalidCharacter := range invalidCharacters {
+		switch strings.Contains(username, invalidCharacter) {
+		case true:
+			return false
+		}
+	}
 	isValid, _ := regexp.MatchString("^\\D[\\w,\\d,_]{7,31}$", username)
 	return isValid
 }
