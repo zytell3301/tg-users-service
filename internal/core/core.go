@@ -91,7 +91,7 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 }
 
 func qualifyUsername(username string) bool {
-	isValid, _ := regexp.MatchString("^\\D.{7,31}$", username)
+	isValid, _ := regexp.MatchString("^\\D[\\w,\\d,_]{7,31}$", username)
 	return isValid
 }
 
