@@ -17,9 +17,12 @@ type Service struct {
 	serviceId     string
 }
 
-func NewUsersCore(repository UsersRepository) Service {
+func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, instanceId string, serviceId string) Service {
 	return Service{
-		repository: repository,
+		repository:    repository,
+		ErrorReporter: errorReporter,
+		instanceId:    instanceId,
+		serviceId:     serviceId,
 	}
 }
 
