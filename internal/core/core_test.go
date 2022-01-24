@@ -33,7 +33,9 @@ func TestService_NewUser(t *testing.T) {
 	repositoryMock.EXPECT().NewUser(user)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone)
 
-	core := NewUsersCore(repositoryMock)
+	reporterMock := NewMockReporter(controller)
+
+	core := NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 
 	err := core.NewUser(user)
 
@@ -53,7 +55,9 @@ func TestService_NewUser2(t *testing.T) {
 	repositoryMock.EXPECT().NewUser(user).AnyTimes()
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(true, nil)
 
-	core := NewUsersCore(repositoryMock)
+	reporterMock := NewMockReporter(controller)
+
+	core := NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 
 	err := core.NewUser(user)
 	switch err == nil || !errors.As(err, &UserAlreadyExists{}) {
@@ -72,7 +76,10 @@ func TestService_NewUser3(t *testing.T) {
 	repositoryMock.EXPECT().NewUser(user).Return(dummyError)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
 
-	core := NewUsersCore(repositoryMock)
+	reporterMock := NewMockReporter(controller)
+	reporterMock.EXPECT().Report(gomock.Any())
+
+	core := NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 
 	err := core.NewUser(user)
 	switch err == nil {
@@ -95,7 +102,10 @@ func TestService_NewUser4(t *testing.T) {
 	mock := NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUserExists(user.Phone).Return(false, dummyError)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+	reporterMock.EXPECT().Report(gomock.Any())
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.NewUser(user)
 	switch err == nil {
 	case true:
@@ -117,7 +127,9 @@ func TestService_UpdateUsername(t *testing.T) {
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
 	mock.EXPECT().UpdateUsername(user.Phone, newUsername)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.UpdateUsername(user.Phone, newUsername)
 
 	switch err != nil {
@@ -135,7 +147,9 @@ func TestService_UpdateUsername2(t *testing.T) {
 	mock := NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(true, nil)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.UpdateUsername(user.Phone, newUsername)
 	switch err == nil {
 	case true:
@@ -156,7 +170,10 @@ func TestService_UpdateUsername3(t *testing.T) {
 	mock := NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false, dummyError)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+	reporterMock.EXPECT().Report(gomock.Any())
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.UpdateUsername(user.Phone, newUsername)
 	switch err == nil {
 	case true:
@@ -178,7 +195,10 @@ func TestService_UpdateUsername4(t *testing.T) {
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
 	mock.EXPECT().UpdateUsername(user.Phone, newUsername).Return(dummyError)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+	reporterMock.EXPECT().Report(gomock.Any())
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.UpdateUsername(user.Phone, newUsername)
 	switch err == nil {
 	case true:
@@ -199,7 +219,9 @@ func TestService_DeleteUser(t *testing.T) {
 	mock := NewMockUsersRepository(controller)
 	mock.EXPECT().DeleteUser(user.Phone)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.DeleteUser(user.Phone)
 	switch err != nil {
 	case true:
@@ -216,7 +238,10 @@ func TestService_DeleteUser2(t *testing.T) {
 	mock := NewMockUsersRepository(controller)
 	mock.EXPECT().DeleteUser(user.Phone).Return(dummyError)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+	reporterMock.EXPECT().Report(gomock.Any())
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.DeleteUser(user.Phone)
 
 	switch err == nil {
@@ -238,7 +263,9 @@ func TestService_RequestSecurityCode(t *testing.T) {
 	mock := NewMockUsersRepository(controller)
 	mock.EXPECT().RecordSecurityCode(user.Phone, gomock.Any()).Return(nil)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.RequestSecurityCode(user.Phone)
 	switch err != nil {
 	case true:
@@ -253,9 +280,12 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
 	mock := NewMockUsersRepository(controller)
-	mock.EXPECT().RecordSecurityCode(user.Phone,gomock.Any()).Return(dummyError)
+	mock.EXPECT().RecordSecurityCode(user.Phone, gomock.Any()).Return(dummyError)
 
-	core := NewUsersCore(mock)
+	reporterMock := NewMockReporter(controller)
+	reporterMock.EXPECT().Report(gomock.Any())
+
+	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.RequestSecurityCode(user.Phone)
 	switch err == nil {
 	case true:
