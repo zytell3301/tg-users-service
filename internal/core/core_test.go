@@ -363,3 +363,34 @@ func Test_qualifyUsername(t *testing.T) {
 	}
 
 }
+
+/**
+ * Test case for valid usernames
+ */
+func Test_qualifyUsername1(t *testing.T) {
+	parameters := []qualifyUsername_parameter{
+		{
+			username: "asklzxcasd",
+			expected: true,
+		},
+		{
+			username: "asd1xzcs",
+			expected: true,
+		},
+		{
+			username: "a12940841",
+			expected: true,
+		},
+		{
+			username: "lkasjdklnzxklcjasdjsklandaskljda",
+			expected: true,
+		},
+	}
+	for _, parameter := range parameters {
+		result := qualifyUsername(parameter.username)
+		switch result != parameter.expected {
+		case true:
+			t.Errorf("Expected qualifyUsername method to return true but returned false for valid username: %v", parameter.username)
+		}
+	}
+}
