@@ -243,3 +243,20 @@ func TestService_RequestSecurityCode(t *testing.T) {
 		t.Errorf("Expected RequestSecurityCode method to succeed but an error returned. Error message %v", err)
 	}
 }
+
+/**
+ * Test case for Database failure
+ */
+func TestService_RequestSecurityCode2(t *testing.T) {
+	controller := newController(t)
+	defer controller.Finish()
+	mock := NewMockUsersRepository(controller)
+	mock.EXPECT().RecordSecurityCode(user.Phone,gomock.Any()).Return(dummyError)
+
+	core := NewUsersCore(mock)
+	err := core.RequestSecurityCode(user.Phone)
+	switch err == nil {
+	case true:
+		t.Errorf("Expected RequestSecurityCode method to return error but no error returned")
+	}
+}
