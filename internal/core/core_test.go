@@ -16,6 +16,8 @@ var user = domain.User{
 
 var newUsername = "NewUsername"
 var dummyError = errors.New("")
+var dummyInstanceId = "b8b342e2-3c8a-41f6-8f28-53042ae12519"
+var dummyServiceId = "199adc34-f9fd-425e-b721-d5e2b400d289"
 
 func newController(t *testing.T) *gomock.Controller {
 	return gomock.NewController(t)
