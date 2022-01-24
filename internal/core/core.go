@@ -7,6 +7,7 @@ import (
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"golang.org/x/crypto/bcrypt"
 	"math/big"
+	"regexp"
 	"strconv"
 )
 
@@ -87,6 +88,11 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	}
 
 	return
+}
+
+func qualifyUsername(username string) bool {
+	isValid, _ := regexp.MatchString("^\\D.{7,31}$", username)
+	return isValid
 }
 
 func (s Service) DeleteUser(phone string) (err error) {
