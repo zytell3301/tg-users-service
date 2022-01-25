@@ -24,6 +24,10 @@ type UsernameNotQualified struct {
 	errors.Derror
 }
 
+type SecurityCodeNotValid struct {
+	errors.Derror
+}
+
 var (
 	UserAlreadyExistsError = UserAlreadyExists{
 		errors.Derror{
@@ -53,6 +57,12 @@ var (
 		errors.Derror{
 			Message: "username not qualified",
 			Code:    6,
+		},
+	}
+	SecurityCodeNotValiderror = SecurityCodeNotValid{
+		errors.Derror{
+			Message: "security is incorrect or expired ",
+			Code:    7,
 		},
 	}
 )
