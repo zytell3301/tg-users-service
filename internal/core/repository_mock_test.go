@@ -78,6 +78,21 @@ func (mr *MockUsersRepositoryMockRecorder) DoesUsernameExists(username interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoesUsernameExists", reflect.TypeOf((*MockUsersRepository)(nil).DoesUsernameExists), username)
 }
 
+// GetSecurityCode mocks base method.
+func (m *MockUsersRepository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSecurityCode", phone)
+	ret0, _ := ret[0].(domain.SecurityCode)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSecurityCode indicates an expected call of GetSecurityCode.
+func (mr *MockUsersRepositoryMockRecorder) GetSecurityCode(phone interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSecurityCode", reflect.TypeOf((*MockUsersRepository)(nil).GetSecurityCode), phone)
+}
+
 // NewUser mocks base method.
 func (m *MockUsersRepository) NewUser(user domain.User) error {
 	m.ctrl.T.Helper()
