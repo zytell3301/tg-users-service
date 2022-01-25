@@ -2,6 +2,7 @@ package core
 
 import (
 	"crypto/rand"
+	"fmt"
 	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
@@ -138,6 +139,23 @@ func (s Service) RequestSecurityCode(phone string) (err error) {
 	return
 }
 
+func (s Service) VerifySecurityCode(phone string, code string) error {
+	securityCode, err := s.repository.GetSecurityCode(phone)
+	switch err != nil {
+	case true:
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    fmt.Sprintf("An error occurred while fetching security code from repository. Error message: %s", err.Error()),
+		})
+	}
+	switch checkHashMatch(code, securityCode.SecurityCode) {
+	case false:
+		return SecurityCodeNotValiderror
+	}
+	return nil
+}
+
 func hashExpression(expression string) string {
 	hashedExpression, _ := bcrypt.GenerateFromPassword([]byte(expression), 12)
 	return string(hashedExpression)
@@ -146,4 +164,8 @@ func hashExpression(expression string) string {
 func generateSecurityCode() string {
 	securityCode, _ := rand.Int(rand.Reader, big.NewInt(999999-100000))
 	return strconv.Itoa(int(securityCode.Int64()) + 100000)
+}
+
+func checkHashMatch(expression string, hash string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(expression)) == nil
 }
