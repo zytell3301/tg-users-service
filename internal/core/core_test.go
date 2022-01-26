@@ -5,6 +5,7 @@ import (
 	"github.com/golang/mock/gomock"
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
+	"github.com/zytell3301/tg-users-service/internal/repository"
 	"testing"
 )
 
@@ -34,7 +35,7 @@ func newController(t *testing.T) *gomock.Controller {
 func TestService_NewUser(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	repositoryMock := NewMockUsersRepository(controller)
+	repositoryMock := repository.NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone)
 
@@ -56,7 +57,7 @@ func TestService_NewUser(t *testing.T) {
 func TestService_NewUser2(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	repositoryMock := NewMockUsersRepository(controller)
+	repositoryMock := repository.NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user).AnyTimes()
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(true, nil)
 
@@ -77,7 +78,7 @@ func TestService_NewUser2(t *testing.T) {
 func TestService_NewUser3(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	repositoryMock := NewMockUsersRepository(controller)
+	repositoryMock := repository.NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user).Return(dummyError)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
 
@@ -104,7 +105,7 @@ func TestService_NewUser3(t *testing.T) {
 func TestService_NewUser4(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUserExists(user.Phone).Return(false, dummyError)
 
 	reporterMock := NewMockReporter(controller)
@@ -128,7 +129,7 @@ func TestService_NewUser4(t *testing.T) {
 func TestService_UpdateUsername(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
 	mock.EXPECT().UpdateUsername(user.Phone, newUsername)
 
@@ -149,7 +150,7 @@ func TestService_UpdateUsername(t *testing.T) {
 func TestService_UpdateUsername2(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(true, nil)
 
 	reporterMock := NewMockReporter(controller)
@@ -172,7 +173,7 @@ func TestService_UpdateUsername2(t *testing.T) {
 func TestService_UpdateUsername3(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false, dummyError)
 
 	reporterMock := NewMockReporter(controller)
@@ -196,7 +197,7 @@ func TestService_UpdateUsername3(t *testing.T) {
 func TestService_UpdateUsername4(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
 	mock.EXPECT().UpdateUsername(user.Phone, newUsername).Return(dummyError)
 
@@ -221,7 +222,7 @@ func TestService_UpdateUsername4(t *testing.T) {
 func TestService_DeleteUser(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DeleteUser(user.Phone)
 
 	reporterMock := NewMockReporter(controller)
@@ -240,7 +241,7 @@ func TestService_DeleteUser(t *testing.T) {
 func TestService_DeleteUser2(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DeleteUser(user.Phone).Return(dummyError)
 
 	reporterMock := NewMockReporter(controller)
@@ -265,7 +266,7 @@ func TestService_DeleteUser2(t *testing.T) {
 func TestService_RequestSecurityCode(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().RecordSecurityCode(user.Phone, gomock.Any()).Return(nil)
 
 	reporterMock := NewMockReporter(controller)
@@ -284,7 +285,7 @@ func TestService_RequestSecurityCode(t *testing.T) {
 func TestService_RequestSecurityCode2(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
-	mock := NewMockUsersRepository(controller)
+	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().RecordSecurityCode(user.Phone, gomock.Any()).Return(dummyError)
 
 	reporterMock := NewMockReporter(controller)
