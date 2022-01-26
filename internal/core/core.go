@@ -151,7 +151,7 @@ func (s Service) VerifySecurityCode(phone string, code string) error {
 	}
 	switch checkHashMatch(code, securityCode.SecurityCode) {
 	case false:
-		return SecurityCodeNotValiderror
+		return SecurityCodeNotValidError
 	}
 	return nil
 }

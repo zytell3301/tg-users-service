@@ -59,7 +59,7 @@ var (
 			Code:    6,
 		},
 	}
-	SecurityCodeNotValiderror = SecurityCodeNotValid{
+	SecurityCodeNotValidError = SecurityCodeNotValid{
 		errors.Derror{
 			Message: "security is incorrect or expired ",
 			Code:    7,
