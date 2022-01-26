@@ -16,10 +16,6 @@ type UsernameAlreadyExists struct {
 	errors.Derror
 }
 
-type UsernameTooShort struct {
-	errors.Derror
-}
-
 type UsernameNotQualified struct {
 	errors.Derror
 }
@@ -45,12 +41,6 @@ var (
 		errors.Derror{
 			Message: "username already exists",
 			Code:    4,
-		},
-	}
-	UsernameTooShortError = UsernameTooShort{
-		errors.Derror{
-			Message: "username too short",
-			Code:    5,
 		},
 	}
 	UsernameNotQualifiedError = UsernameNotQualified{
