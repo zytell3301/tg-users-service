@@ -2,7 +2,7 @@
 // Source: repository.go
 
 // Package core is a generated GoMock package.
-package core
+package repository
 
 import (
 	reflect "reflect"
