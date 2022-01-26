@@ -25,13 +25,13 @@ func NewHandler(service core.Service) Handler {
 	}
 }
 
-func (h Handler) NewUser(ctx context.Context, user *UsersService.User) (*error1.Error, error) {
+func (h Handler) NewUser(ctx context.Context, message *UsersService.NewUserMessage) (*error1.Error, error) {
 	err := h.core.NewUser(domain.User{
-		Name:       user.Name,
-		Lastname:   user.Lastname,
-		Phone:      user.Phone,
+		Name:       message.User.Name,
+		Lastname:   message.User.Lastname,
+		Phone:      message.User.Phone,
 		Created_at: time.Now(),
-	})
+	}, message.SecurityCode.Code)
 
 	switch {
 	case errors.As(err, &core.UserAlreadyExists{}):
