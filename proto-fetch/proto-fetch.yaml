@@ -10,6 +10,10 @@ before-fetch-commands:
 after-fetch-commands:
   - protoc --go_out=$PROJECT_ROOT -I=.. --go_opt=module=github.com/zytell3301/tg-users-service $PROJECT_ROOT/$PROTO_ROOT/error.proto
   - protoc --go_out=$PROJECT_ROOT --go-grpc_out=$PROJECT_ROOT -I=.. --go_opt=module=github.com/zytell3301/tg-users-service --go-grpc_opt=module=github.com/zytell3301/tg-users-service $PROJECT_ROOT/$PROTO_ROOT/users-service.proto
+  - git restore --staged $PROJECT_ROOT
+  - git add $PROJECT_ROOT/pkg/error
+  - git add $PROJECT_ROOT/pkg/UsersService
+  - git commit -m "Fetch and compile updated proto files"
 env-variables:
   - $PROTO_ROOT=api/pb/UsersService
   - $PROJECT_ROOT=./..
