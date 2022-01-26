@@ -6,6 +6,7 @@ import (
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/tg-users-service/internal/repository"
+	"golang.org/x/crypto/bcrypt"
 	"testing"
 )
 
@@ -20,10 +21,21 @@ var user = domain.User{
 	Phone:    "+0000000000",
 }
 
+var securityCode = domain.SecurityCode{
+	Phone: user.Phone,
+}
+
+var securityCodeRaw = "123456"
+
 var newUsername = "NewUsername"
 var dummyError = errors.New("")
 var dummyInstanceId = "b8b342e2-3c8a-41f6-8f28-53042ae12519"
 var dummyServiceId = "199adc34-f9fd-425e-b721-d5e2b400d289"
+
+func init() {
+	hashedSecurityCode, _ := bcrypt.GenerateFromPassword([]byte(securityCodeRaw), 12)
+	securityCode.SecurityCode = string(hashedSecurityCode)
+}
 
 func newController(t *testing.T) *gomock.Controller {
 	return gomock.NewController(t)
@@ -38,12 +50,13 @@ func TestService_NewUser(t *testing.T) {
 	repositoryMock := repository.NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone)
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
 	reporterMock := NewMockReporter(controller)
 
 	core := NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 
-	err := core.NewUser(user)
+	err := core.NewUser(user, securityCodeRaw)
 
 	switch err != nil {
 	case true:
@@ -60,12 +73,13 @@ func TestService_NewUser2(t *testing.T) {
 	repositoryMock := repository.NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user).AnyTimes()
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(true, nil)
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
 	reporterMock := NewMockReporter(controller)
 
 	core := NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 
-	err := core.NewUser(user)
+	err := core.NewUser(user, securityCodeRaw)
 	switch err == nil || !errors.As(err, &UserAlreadyExists{}) {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
@@ -81,13 +95,14 @@ func TestService_NewUser3(t *testing.T) {
 	repositoryMock := repository.NewMockUsersRepository(controller)
 	repositoryMock.EXPECT().NewUser(user).Return(dummyError)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
 	reporterMock := NewMockReporter(controller)
 	reporterMock.EXPECT().Report(gomock.Any())
 
 	core := NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 
-	err := core.NewUser(user)
+	err := core.NewUser(user, securityCodeRaw)
 	switch err == nil {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
@@ -107,12 +122,13 @@ func TestService_NewUser4(t *testing.T) {
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUserExists(user.Phone).Return(false, dummyError)
+	mock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
 	reporterMock := NewMockReporter(controller)
 	reporterMock.EXPECT().Report(gomock.Any())
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
-	err := core.NewUser(user)
+	err := core.NewUser(user, securityCodeRaw)
 	switch err == nil {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
