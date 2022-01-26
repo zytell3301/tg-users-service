@@ -66,10 +66,10 @@ func (h Handler) UpdateUsername(ctx context.Context, message *UsersService.Updat
 	err := h.core.UpdateUsername(message.Phone, message.Username)
 
 	switch {
-	case errors.As(err, core.UsernameTooShort{}):
+	case errors.As(err, core.UsernameNotQualified{}):
 		return &error1.Error{
-			Message: core.UsernameTooShortError.Message,
-			Code:    core.UsernameTooShortError.Code,
+			Message: core.UsernameNotQualifiedError.Message,
+			Code:    core.UsernameNotQualifiedError.Code,
 		}, nil
 
 	case errors.As(err, core.UsernameAlreadyExists{}):
