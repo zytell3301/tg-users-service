@@ -2,6 +2,7 @@ package core
 
 import (
 	"crypto/rand"
+	errors2 "errors"
 	"fmt"
 	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
@@ -29,7 +30,22 @@ func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Report
 	}
 }
 
-func (s Service) NewUser(user domain.User) (err error) {
+func (s Service) NewUser(user domain.User, securityCode string) (err error) {
+	err = s.VerifySecurityCode(user.Phone, securityCode)
+	switch err != nil {
+	case true:
+		switch errors2.As(err, &SecurityCodeNotValid{}) {
+		case true:
+			return err
+		default:
+			s.ErrorReporter.Report(ErrorReporter.Error{
+				ServiceId:  s.serviceId,
+				InstanceId: s.instanceId,
+				Message:    fmt.Sprintf("An error occurred while checking for security code. Error message: %s", err.Error()),
+			})
+			return errors.InternalErrorOccurred
+		}
+	}
 	doesExists, err := s.repository.DoesUserExists(user.Phone)
 	switch err != nil {
 	case true:
