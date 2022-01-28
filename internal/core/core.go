@@ -222,6 +222,14 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	return nil
 }
 
+func (s Service) reportGetSecurityCodeError(err error) {
+	go s.ErrorReporter.Report(ErrorReporter.Error{
+		ServiceId:  s.serviceId,
+		InstanceId: s.instanceId,
+		Message:    fmt.Sprintf("An error occurred while fetching security code from repository. Error message: %s", err.Error()),
+	})
+}
+
 func hashExpression(expression string) string {
 	hashedExpression, _ := bcrypt.GenerateFromPassword([]byte(expression), 12)
 	return string(hashedExpression)
