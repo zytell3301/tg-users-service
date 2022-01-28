@@ -21,6 +21,10 @@ type Service struct {
 	serviceId     string
 }
 
+const (
+	security_code_signup_action = "SIGN UP"
+)
+
 func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, instanceId string, serviceId string) Service {
 	return Service{
 		repository:    repository,
@@ -31,7 +35,7 @@ func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Report
 }
 
 func (s Service) NewUser(user domain.User, securityCode string) (err error) {
-	err = s.VerifySecurityCode(user.Phone, securityCode)
+	err = s.VerifySecurityCode(user.Phone, securityCode, security_code_signup_action)
 	switch err != nil {
 	case true:
 		switch errors2.As(err, &SecurityCodeNotValid{}) {
