@@ -155,7 +155,7 @@ func (s Service) RequestSecurityCode(phone string) (err error) {
 	return
 }
 
-func (s Service) VerifySecurityCode(phone string, code string) error {
+func (s Service) VerifySecurityCode(phone string, code string, action string) error {
 	securityCode, err := s.repository.GetSecurityCode(phone)
 	switch err != nil {
 	case true:
@@ -168,6 +168,10 @@ func (s Service) VerifySecurityCode(phone string, code string) error {
 	switch checkHashMatch(code, securityCode.SecurityCode) {
 	case false:
 		return SecurityCodeNotValidError
+	}
+	switch securityCode.Action != action {
+	case true:
+		return SecurityCodeActionDoesNotMatchError
 	}
 	return nil
 }
