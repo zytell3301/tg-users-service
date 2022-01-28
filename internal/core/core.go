@@ -230,6 +230,14 @@ func (s Service) reportDoesUsernameExistsError(err error) {
 	})
 }
 
+func (s Service) reportUpdateUsernameError(err error) {
+	go s.ErrorReporter.Report(ErrorReporter.Error{
+		ServiceId:  s.serviceId,
+		InstanceId: s.instanceId,
+		Message:    fmt.Sprintf("An error occurred while updating username in database. Error message: %v", err.Error()),
+	})
+}
+
 func hashExpression(expression string) string {
 	hashedExpression, _ := bcrypt.GenerateFromPassword([]byte(expression), 12)
 	return string(hashedExpression)
