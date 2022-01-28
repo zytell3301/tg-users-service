@@ -43,11 +43,6 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 		case true:
 			return err
 		default:
-			s.ErrorReporter.Report(ErrorReporter.Error{
-				ServiceId:  s.serviceId,
-				InstanceId: s.instanceId,
-				Message:    fmt.Sprintf("An error occurred while checking for security code. Error message: %s", err.Error()),
-			})
 			return errors.InternalErrorOccurred
 		}
 	}
@@ -182,6 +177,7 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	switch err != nil {
 	case true:
 		s.reportGetSecurityCodeError(err)
+		return errors.InternalErrorOccurred
 	}
 	switch checkHashMatch(code, securityCode.SecurityCode) {
 	case false:
