@@ -294,11 +294,12 @@ func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 	}, nil
 }
 
-func (r Repository) RecordSecurityCode(phone string, code string) (err error) {
+func (r Repository) RecordSecurityCode(securityCode domain.SecurityCode) (err error) {
 	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
 	err = r.securityCodesMetaData.NewRecord(map[string]interface{}{
-		"phone": phone,
-		"code":  code,
+		"phone":  securityCode.Phone,
+		"code":   securityCode.SecurityCode,
+		"action": securityCode.Action,
 	}, batch)
 	switch err != nil {
 	case true:
