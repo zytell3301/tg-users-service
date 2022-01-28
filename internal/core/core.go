@@ -92,11 +92,7 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	err = s.repository.UpdateUsername(phone, username)
 	switch err != nil {
 	case true:
-		s.ErrorReporter.Report(ErrorReporter.Error{
-			ServiceId:  s.serviceId,
-			InstanceId: s.instanceId,
-			Message:    err.Error(),
-		})
+		s.reportUpdateUsernameError(err)
 		return errors.InternalError{}
 	}
 
