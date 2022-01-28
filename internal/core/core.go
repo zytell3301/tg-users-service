@@ -234,6 +234,14 @@ func (s Service) reportUpdateUsernameError(err error) {
 	})
 }
 
+func (s Service) reportNewUserError(err error) {
+	go s.ErrorReporter.Report(ErrorReporter.Error{
+		ServiceId:  s.serviceId,
+		InstanceId: s.instanceId,
+		Message:    fmt.Sprintf("An error occurred while inserting user into database. Error message: %v", err.Error()),
+	})
+}
+
 func hashExpression(expression string) string {
 	hashedExpression, _ := bcrypt.GenerateFromPassword([]byte(expression), 12)
 	return string(hashedExpression)
