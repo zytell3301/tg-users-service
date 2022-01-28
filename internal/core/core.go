@@ -182,60 +182,40 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	return nil
 }
 
-func (s Service) reportGetSecurityCodeError(err error) {
+func (s Service) reportError(subject string, err error) {
 	go s.ErrorReporter.Report(ErrorReporter.Error{
 		ServiceId:  s.serviceId,
 		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while fetching security code from repository. Error message: %s", err.Error()),
+		Message:    fmt.Sprintf("An error occurred while %s. Error message: %s", subject, err.Error()),
 	})
+}
+
+func (s Service) reportGetSecurityCodeError(err error) {
+	s.reportError("fetching security code from repository", err)
 }
 
 func (s Service) reportDoesUserExistsError(err error) {
-	go s.ErrorReporter.Report(ErrorReporter.Error{
-		ServiceId:  s.serviceId,
-		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while checking for user existence. Error message: %v", err.Error()),
-	})
+	s.reportError("checking for user existence", err)
 }
 
 func (s Service) reportDeleteUserError(err error) {
-	go s.ErrorReporter.Report(ErrorReporter.Error{
-		ServiceId:  s.serviceId,
-		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while deleting user from database. Error message: %v", err.Error()),
-	})
+	s.reportError("deleting user from database", err)
 }
 
 func (s Service) reportRequestSecurityCodeError(err error) {
-	go s.ErrorReporter.Report(ErrorReporter.Error{
-		ServiceId:  s.serviceId,
-		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while recording security code on database. Error message: %v", err.Error()),
-	})
+	s.reportError("recording security code on database", err)
 }
 
 func (s Service) reportDoesUsernameExistsError(err error) {
-	go s.ErrorReporter.Report(ErrorReporter.Error{
-		ServiceId:  s.serviceId,
-		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while checking for username existence. Error message: %v", err.Error()),
-	})
+	s.reportError("checking for username existence", err)
 }
 
 func (s Service) reportUpdateUsernameError(err error) {
-	go s.ErrorReporter.Report(ErrorReporter.Error{
-		ServiceId:  s.serviceId,
-		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while updating username in database. Error message: %v", err.Error()),
-	})
+	s.reportError("updating username in database", err)
 }
 
 func (s Service) reportNewUserError(err error) {
-	go s.ErrorReporter.Report(ErrorReporter.Error{
-		ServiceId:  s.serviceId,
-		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while inserting user into database. Error message: %v", err.Error()),
-	})
+	s.reportError("inserting user into database", err)
 }
 
 func hashExpression(expression string) string {
