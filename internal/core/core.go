@@ -205,11 +205,7 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	securityCode, err := s.repository.GetSecurityCode(phone)
 	switch err != nil {
 	case true:
-		s.ErrorReporter.Report(ErrorReporter.Error{
-			ServiceId:  s.serviceId,
-			InstanceId: s.instanceId,
-			Message:    fmt.Sprintf("An error occurred while fetching security code from repository. Error message: %s", err.Error()),
-		})
+		s.reportGetSecurityCodeError(err)
 	}
 	switch checkHashMatch(code, securityCode.SecurityCode) {
 	case false:
