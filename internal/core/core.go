@@ -131,11 +131,7 @@ func (s Service) DeleteUser(phone string) (err error) {
 	err = s.repository.DeleteUser(phone)
 	switch err != nil {
 	case true:
-		s.ErrorReporter.Report(ErrorReporter.Error{
-			ServiceId:  s.serviceId,
-			InstanceId: s.instanceId,
-			Message:    err.Error(),
-		})
+		s.reportDeleteUserError(err)
 		return errors.InternalError{}
 	}
 
