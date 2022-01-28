@@ -87,11 +87,7 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	doesExists, err := s.repository.DoesUsernameExists(username)
 	switch err != nil {
 	case true:
-		s.ErrorReporter.Report(ErrorReporter.Error{
-			ServiceId:  s.serviceId,
-			InstanceId: s.instanceId,
-			Message:    err.Error(),
-		})
+		s.reportDoesUsernameExistsError(err)
 		return errors.InternalError{}
 	}
 	switch doesExists {
