@@ -63,11 +63,7 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	})
 	switch err != nil {
 	case true:
-		s.ErrorReporter.Report(ErrorReporter.Error{
-			ServiceId:  s.serviceId,
-			InstanceId: s.instanceId,
-			Message:    err.Error(),
-		})
+		s.reportNewUserError(err)
 		return errors.InternalError{}
 	}
 
