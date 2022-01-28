@@ -316,6 +316,7 @@ func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
 	return domain.SecurityCode{
 		Phone:        securityCode["phone"].(string),
 		SecurityCode: securityCode["code"].(string),
+		Action:       securityCode["action"].(string),
 		CreatedAt:    securityCode["created_at"].(time.Time),
 	}, nil
 }
