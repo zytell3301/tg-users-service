@@ -176,11 +176,7 @@ func (s Service) RequestSecurityCode(phone string, action string) (err error) {
 	})
 	switch err != nil {
 	case true:
-		s.ErrorReporter.Report(ErrorReporter.Error{
-			ServiceId:  s.serviceId,
-			InstanceId: s.instanceId,
-			Message:    err.Error(),
-		})
+		s.reportRequestSecurityCodeError(err)
 	}
 	return
 }
