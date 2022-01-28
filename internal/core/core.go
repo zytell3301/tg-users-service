@@ -232,6 +232,7 @@ func generateSecurityCode() string {
 	return strconv.Itoa(int(securityCode.Int64()) + 100000)
 }
 
+// @TODO check for hash cost and swap with correct one if the cost does not match
 func checkHashMatch(expression string, hash string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(expression)) == nil
 }
