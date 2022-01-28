@@ -145,9 +145,13 @@ func (s Service) DeleteUser(phone string) (err error) {
 	return
 }
 
-func (s Service) RequestSecurityCode(phone string) (err error) {
+func (s Service) RequestSecurityCode(phone string, action string) (err error) {
 	securityCode := hashExpression(generateSecurityCode())
-	err = s.repository.RecordSecurityCode(phone, securityCode)
+	err = s.repository.RecordSecurityCode(domain.SecurityCode{
+		Phone:        phone,
+		Action:       action,
+		SecurityCode: securityCode,
+	})
 	switch err != nil {
 	case true:
 		s.ErrorReporter.Report(ErrorReporter.Error{
