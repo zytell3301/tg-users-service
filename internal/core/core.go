@@ -23,6 +23,7 @@ type Service struct {
 
 const (
 	security_code_signup_action = "SIGN UP"
+	security_code_login_action  = "LOGIN"
 )
 
 func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, instanceId string, serviceId string) Service {
@@ -161,6 +162,24 @@ func (s Service) RequestSignupSecurityCode(phone string) error {
 		return UserAlreadyExistsError
 	default:
 		return s.RequestSecurityCode(phone, security_code_signup_action)
+	}
+}
+
+func (s Service) RequestLoginSecurityCode(phone string) error {
+	doesExists, err := s.repository.DoesUserExists(phone)
+	switch err != nil {
+	case true:
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    fmt.Sprintf("An error occurred while checking for user existence. Error message: %v", err.Error()),
+		})
+	}
+	switch doesExists {
+	case false:
+		return UserNotFoundError
+	default:
+		return s.RequestSecurityCode(phone, security_code_login_action)
 	}
 }
 
