@@ -145,6 +145,25 @@ func (s Service) DeleteUser(phone string) (err error) {
 	return
 }
 
+func (s Service) RequestSignupSecurityCode(phone string) error {
+	doesExists, err := s.repository.DoesUserExists(phone)
+	switch err != nil {
+	case true:
+		s.ErrorReporter.Report(ErrorReporter.Error{
+			ServiceId:  s.serviceId,
+			InstanceId: s.instanceId,
+			Message:    fmt.Sprintf("An error occurred while checking for user existence. Error message: %v", err.Error()),
+		})
+		return errors.InternalErrorOccurred
+	}
+	switch doesExists {
+	case true:
+		return UserAlreadyExistsError
+	default:
+		return s.RequestSecurityCode(phone, security_code_signup_action)
+	}
+}
+
 func (s Service) RequestSecurityCode(phone string, action string) (err error) {
 	securityCode := hashExpression(generateSecurityCode())
 	err = s.repository.RecordSecurityCode(domain.SecurityCode{
