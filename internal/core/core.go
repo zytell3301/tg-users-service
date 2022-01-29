@@ -47,11 +47,11 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	err = s.VerifySecurityCode(user.Phone, securityCode, security_code_signup_action)
 	switch err != nil {
 	case true:
-		switch errors2.As(err, &SecurityCodeNotValid{}) {
+		switch errors2.As(err, &errors.InternalError{}) {
 		case true:
-			return err
-		default:
 			return errors.InternalError{}
+		default:
+			return err
 		}
 	}
 	doesExists, err := s.repository.DoesUserExists(user.Phone)
