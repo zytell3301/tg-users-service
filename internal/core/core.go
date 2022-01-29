@@ -2,11 +2,15 @@ package core
 
 import (
 	"crypto/rand"
+	"crypto/x509"
+	"crypto/x509/pkix"
 	errors2 "errors"
 	"fmt"
+	"github.com/gocql/gocql"
 	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
+	"github.com/zytell3301/tg-users-service/pkg/CertGen"
 	"golang.org/x/crypto/bcrypt"
 	"math/big"
 	"regexp"
@@ -19,6 +23,7 @@ type Service struct {
 	ErrorReporter ErrorReporter.Reporter
 	instanceId    string
 	serviceId     string
+	certGen       *CertGen.CertGen
 }
 
 const (
@@ -71,6 +76,55 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	}
 
 	return
+}
+
+/**
+ * Generate a certificate for corresponding user if provided security code is correct.
+ */
+func (s Service) Login(phone string, securityCode domain.SecurityCode) ([]byte, error) {
+	err := s.VerifySecurityCode(phone, securityCode.SecurityCode, securityCode.Action)
+	switch err != nil {
+	case true:
+		switch errors2.As(err, &SecurityCodeNotValid{}) {
+		case true:
+			return nil, err
+		default:
+			return nil, errors.InternalError{}
+		}
+	}
+	user, err := s.repository.GetUserByPhone(phone)
+	switch err != nil {
+	case true:
+		switch errors2.As(err, gocql.ErrNotFound) {
+		case true:
+			return nil, UserNotFound{}
+		default:
+			s.reportGetUserByPhoneError(err)
+			return nil, errors.InternalError{}
+		}
+	}
+	cert, err := s.generateUserCert(user)
+	switch err != nil {
+	case true:
+		return nil, errors.InternalError{}
+	}
+	return cert, nil
+}
+
+/**
+ * Generates a certificate based on user credentials
+ */
+func (s Service) generateUserCert(user domain.User) ([]byte, error) {
+	cert, err := s.certGen.NewCertificate(&x509.Certificate{
+		Subject: pkix.Name{
+			SerialNumber: user.Id,
+		},
+	})
+	switch err != nil {
+	case true:
+		s.reportErr("generating certificate", err)
+	}
+	return cert, err
 }
 
 /**
@@ -263,6 +317,10 @@ func (s Service) reportUpdateUsernameError(err error) {
 
 func (s Service) reportNewUserError(err error) {
 	s.reportErr("inserting user into database", err)
+}
+
+func (s Service) reportGetUserByPhoneError(err error) {
+	s.reportErr("fetching user from database", err)
 }
 
 func hashExpression(expression string) string {
