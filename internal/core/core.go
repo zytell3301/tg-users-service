@@ -132,7 +132,7 @@ func (s Service) RequestSignupSecurityCode(phone string) error {
 	case true:
 		return UserAlreadyExistsError
 	default:
-		return s.RequestSecurityCode(phone, security_code_signup_action)
+		return s.requestSecurityCode(phone, security_code_signup_action)
 	}
 }
 
@@ -146,11 +146,11 @@ func (s Service) RequestLoginSecurityCode(phone string) error {
 	case false:
 		return UserNotFoundError
 	default:
-		return s.RequestSecurityCode(phone, security_code_login_action)
+		return s.requestSecurityCode(phone, security_code_login_action)
 	}
 }
 
-func (s Service) RequestSecurityCode(phone string, action string) (err error) {
+func (s Service) requestSecurityCode(phone string, action string) (err error) {
 	securityCode := hashExpression(generateSecurityCode())
 	err = s.repository.RecordSecurityCode(domain.SecurityCode{
 		Phone:        phone,

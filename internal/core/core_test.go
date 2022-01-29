@@ -288,10 +288,10 @@ func TestService_RequestSecurityCode(t *testing.T) {
 	reporterMock := NewMockReporter(controller)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
-	err := core.RequestSecurityCode(user.Phone)
+	err := core.requestSecurityCode(user.Phone)
 	switch err != nil {
 	case true:
-		t.Errorf("Expected RequestSecurityCode method to succeed but an error returned. Error message %v", err)
+		t.Errorf("Expected requestSecurityCode method to succeed but an error returned. Error message %v", err)
 	}
 }
 
@@ -308,10 +308,10 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 	reporterMock.EXPECT().Report(gomock.Any())
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
-	err := core.RequestSecurityCode(user.Phone)
+	err := core.requestSecurityCode(user.Phone)
 	switch err == nil {
 	case true:
-		t.Errorf("Expected RequestSecurityCode method to return error but no error returned")
+		t.Errorf("Expected requestSecurityCode method to return error but no error returned")
 	}
 }
 
