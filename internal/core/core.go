@@ -95,7 +95,7 @@ func (s Service) Login(phone string, securityCode domain.SecurityCode) ([]byte, 
 	user, err := s.repository.GetUserByPhone(phone)
 	switch err != nil {
 	case true:
-		switch errors2.As(err, gocql.ErrNotFound) {
+		switch errors2.As(err, &gocql.ErrNotFound) {
 		case true:
 			return nil, UserNotFound{}
 		default:
