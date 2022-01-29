@@ -3,6 +3,7 @@ module github.com/zytell3301/tg-users-service
 go 1.16
 
 require (
+	bou.ke/monkey v1.0.2 // indirect
 	github.com/gocql/gocql v0.0.0-20211222173705-d73e6b1002a7
 	github.com/golang/mock v1.6.0
 	github.com/golang/snappy v0.0.4 // indirect
