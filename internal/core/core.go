@@ -36,8 +36,7 @@ func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Report
 }
 
 /**
- * Creates a new user if the phone number already exists. Otherwise it returns
- * UserAlreadyExistsError
+ * Creates a new user if the phone number already exists. Otherwise it returns UserAlreadyExists error
  */
 func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	err = s.VerifySecurityCode(user.Phone, securityCode, security_code_signup_action)
@@ -77,8 +76,8 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 /**
  * Updates current user's username or sets a new one if the user currently don't have username.
  * First username is qualified under username policies and then the username existence is checked before update.
- * If the username qualification failed UsernameNotQualifiedError is returned.
- * If the username exists UsernameAlreadyExistsError will be returned.
+ * If the username qualification failed UsernameNotQualified error is returned.
+ * If the username exists UsernameAlreadyExists error will be returned.
  */
 func (s Service) UpdateUsername(phone string, username string) (err error) {
 	switch qualifyUsername(username) {
