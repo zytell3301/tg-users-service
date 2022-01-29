@@ -220,42 +220,50 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 }
 
 /**
- * Reports service errors to central error reporter
+ * Reports service errors to central error recorder.
+ * Message layout can be in format of fmt.Sprintf with its parameters
  */
-func (s Service) reportError(subject string, err error) {
+func (s Service) reportError(message string, parameters ...string) {
 	go s.ErrorReporter.Report(ErrorReporter.Error{
 		ServiceId:  s.serviceId,
 		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf("An error occurred while %s. Error message: %s", subject, err.Error()),
+		Message:    fmt.Sprintf(message, parameters),
 	})
 }
 
+/**
+ * Reports service errors to central error recorder with a pre-defined message
+ */
+func (s Service) reportErr(subject string, err error) {
+	s.reportError("An error occurred while %s. Error message: %s", subject, err.Error())
+}
+
 func (s Service) reportGetSecurityCodeError(err error) {
-	s.reportError("fetching security code from repository", err)
+	s.reportErr("fetching security code from repository", err)
 }
 
 func (s Service) reportDoesUserExistsError(err error) {
-	s.reportError("checking for user existence", err)
+	s.reportErr("checking for user existence", err)
 }
 
 func (s Service) reportDeleteUserError(err error) {
-	s.reportError("deleting user from database", err)
+	s.reportErr("deleting user from database", err)
 }
 
 func (s Service) reportRequestSecurityCodeError(err error) {
-	s.reportError("recording security code on database", err)
+	s.reportErr("recording security code on database", err)
 }
 
 func (s Service) reportDoesUsernameExistsError(err error) {
-	s.reportError("checking for username existence", err)
+	s.reportErr("checking for username existence", err)
 }
 
 func (s Service) reportUpdateUsernameError(err error) {
-	s.reportError("updating username in database", err)
+	s.reportErr("updating username in database", err)
 }
 
 func (s Service) reportNewUserError(err error) {
-	s.reportError("inserting user into database", err)
+	s.reportErr("inserting user into database", err)
 }
 
 func hashExpression(expression string) string {
