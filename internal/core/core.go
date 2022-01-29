@@ -47,7 +47,7 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 		case true:
 			return err
 		default:
-			return errors.InternalErrorOccurred
+			return errors.InternalError{}
 		}
 	}
 	doesExists, err := s.repository.DoesUserExists(user.Phone)
@@ -83,7 +83,7 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 func (s Service) UpdateUsername(phone string, username string) (err error) {
 	switch qualifyUsername(username) {
 	case false:
-		return UsernameNotQualifiedError
+		return UsernameNotQualified{}
 	}
 	doesExists, err := s.repository.DoesUsernameExists(username)
 	switch err != nil {
@@ -150,11 +150,11 @@ func (s Service) RequestSignupSecurityCode(phone string) error {
 	switch err != nil {
 	case true:
 		s.reportDoesUserExistsError(err)
-		return errors.InternalErrorOccurred
+		return errors.InternalError{}
 	}
 	switch doesExists {
 	case true:
-		return UserAlreadyExistsError
+		return UserAlreadyExists{}
 	default:
 		return s.requestSecurityCode(phone, security_code_signup_action)
 	}
@@ -172,7 +172,7 @@ func (s Service) RequestLoginSecurityCode(phone string) error {
 	}
 	switch doesExists {
 	case false:
-		return UserNotFoundError
+		return UserNotFound{}
 	default:
 		return s.requestSecurityCode(phone, security_code_login_action)
 	}
@@ -206,15 +206,15 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	switch err != nil {
 	case true:
 		s.reportGetSecurityCodeError(err)
-		return errors.InternalErrorOccurred
+		return errors.InternalError{}
 	}
 	switch checkHashMatch(code, securityCode.SecurityCode) {
 	case false:
-		return SecurityCodeNotValidError
+		return SecurityCodeNotValid{}
 	}
 	switch securityCode.Action != action {
 	case true:
-		return SecurityCodeActionDoesNotMatchError
+		return SecurityCodeActionDoesNotMatch{}
 	}
 	return nil
 }
