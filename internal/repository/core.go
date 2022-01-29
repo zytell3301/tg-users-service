@@ -278,6 +278,10 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 	}, nil
 }
 
+func (r Repository) GetUserByPhone(phone string) (domain.User, error) {
+	return r.getUserByPhone(phone)
+}
+
 func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 	user, err := r.usersPkPhoneMetadata.GetRecord(map[string]interface{}{"phone": phone}, []string{"*"})
 	switch err != nil {
