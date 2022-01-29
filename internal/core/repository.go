@@ -10,4 +10,5 @@ type UsersRepository interface {
 	DoesUsernameExists(username string) (bool, error)
 	RecordSecurityCode(securityCode domain.SecurityCode) error
 	GetSecurityCode(phone string) (domain.SecurityCode, error)
+	GetUserByPhone(phone string) (domain.User, error)
 }
