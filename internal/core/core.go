@@ -35,6 +35,10 @@ func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Report
 	}
 }
 
+/**
+ * Creates a new user if the phone number already exists. Otherwise it returns
+ * UserAlreadyExistsError
+ */
 func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	err = s.VerifySecurityCode(user.Phone, securityCode, security_code_signup_action)
 	switch err != nil {
@@ -70,6 +74,12 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	return
 }
 
+/**
+ * Updates current user's username or sets a new one if the user currently don't have username.
+ * First username is qualified under username policies and then the username existence is checked before update.
+ * If the username qualification failed UsernameNotQualifiedError is returned.
+ * If the username exists UsernameAlreadyExistsError will be returned.
+ */
 func (s Service) UpdateUsername(phone string, username string) (err error) {
 	switch qualifyUsername(username) {
 	case false:
@@ -95,6 +105,12 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	return
 }
 
+/**
+ * Username qualification rules:
+ * least username length is 8
+ * max username length is 32
+ * username must only contain english characters, digits and underscore( _ )
+ */
 func qualifyUsername(username string) bool {
 	invalidCharacters := []string{
 		"@",
@@ -110,6 +126,10 @@ func qualifyUsername(username string) bool {
 	return isValid
 }
 
+/**
+ * Deletes user account.
+ * @TODO other user data must be deleted like messages
+ */
 func (s Service) DeleteUser(phone string) (err error) {
 	err = s.repository.DeleteUser(phone)
 	switch err != nil {
@@ -121,6 +141,10 @@ func (s Service) DeleteUser(phone string) (err error) {
 	return
 }
 
+/**
+ * Creates a new security code for only signing up.
+ * If the user already exists UserAlreadyExists error will be returned.
+ */
 func (s Service) RequestSignupSecurityCode(phone string) error {
 	doesExists, err := s.repository.DoesUserExists(phone)
 	switch err != nil {
@@ -136,6 +160,10 @@ func (s Service) RequestSignupSecurityCode(phone string) error {
 	}
 }
 
+/**
+ * Creates a new security code only for login.
+ * If the user does not exists UserNotFound error will be returned
+ */
 func (s Service) RequestLoginSecurityCode(phone string) error {
 	doesExists, err := s.repository.DoesUserExists(phone)
 	switch err != nil {
@@ -150,6 +178,10 @@ func (s Service) RequestLoginSecurityCode(phone string) error {
 	}
 }
 
+/**
+ * Creates a new security code but this method is not directly accessible from outside of package.
+ * It is only available from RequestLoginSecurityCode or RequestSignupSecurityCode methods
+ */
 func (s Service) requestSecurityCode(phone string, action string) (err error) {
 	securityCode := hashExpression(generateSecurityCode())
 	err = s.repository.RecordSecurityCode(domain.SecurityCode{
@@ -164,6 +196,11 @@ func (s Service) requestSecurityCode(phone string, action string) (err error) {
 	return
 }
 
+/**
+ * Verifies given security code and action.
+ * If the security code is incorrect SecurityCodeNotValid error will be returned.
+ * If the security code is correct but the action is incorrect, SecurityCodeActionDoesNotMatch will be returned
+ */
 func (s Service) VerifySecurityCode(phone string, code string, action string) error {
 	securityCode, err := s.repository.GetSecurityCode(phone)
 	switch err != nil {
@@ -182,6 +219,9 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	return nil
 }
 
+/**
+ * Reports service errors to central error reporter
+ */
 func (s Service) reportError(subject string, err error) {
 	go s.ErrorReporter.Report(ErrorReporter.Error{
 		ServiceId:  s.serviceId,
