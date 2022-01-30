@@ -1,12 +1,14 @@
 package core
 
 import (
+	"bou.ke/monkey"
 	"errors"
 	"github.com/golang/mock/gomock"
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/tg-users-service/internal/repository"
 	"golang.org/x/crypto/bcrypt"
+	"reflect"
 	"testing"
 )
 
@@ -23,6 +25,7 @@ var user = domain.User{
 
 var securityCode = domain.SecurityCode{
 	Phone: user.Phone,
+	Action: security_code_signup_action,
 }
 
 var securityCodeRaw = "123456"
@@ -41,6 +44,12 @@ func newController(t *testing.T) *gomock.Controller {
 	return gomock.NewController(t)
 }
 
+func patchHasherFunc() {
+	monkey.Patch(hashExpression, func(expression string) string {
+		return securityCode.SecurityCode
+	})
+}
+
 /*
  * test case for normal request
  */
@@ -48,9 +57,9 @@ func TestService_NewUser(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
 	repositoryMock := repository.NewMockUsersRepository(controller)
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 	repositoryMock.EXPECT().NewUser(user)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone)
-	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
 	reporterMock := NewMockReporter(controller)
 
@@ -60,7 +69,7 @@ func TestService_NewUser(t *testing.T) {
 
 	switch err != nil {
 	case true:
-		t.Errorf("Expected NewUser to succeed but error returned. Error: %v", err)
+		t.Errorf("Expected NewUser to succeed but error returned. Error: %v Error type: %v", err,reflect.TypeOf(err))
 	}
 }
 
@@ -283,12 +292,17 @@ func TestService_RequestSecurityCode(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
-	mock.EXPECT().RecordSecurityCode(user.Phone, gomock.Any()).Return(nil)
-
+	mock.EXPECT().RecordSecurityCode(domain.SecurityCode{
+		Phone:        user.Phone,
+		SecurityCode: securityCode.SecurityCode,
+		Action:       security_code_signup_action,
+	}).Return(nil)
+	patchHasherFunc()
+	defer monkey.UnpatchAll()
 	reporterMock := NewMockReporter(controller)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
-	err := core.requestSecurityCode(user.Phone)
+	err := core.requestSecurityCode(user.Phone, security_code_signup_action)
 	switch err != nil {
 	case true:
 		t.Errorf("Expected requestSecurityCode method to succeed but an error returned. Error message %v", err)
@@ -302,13 +316,17 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 	controller := newController(t)
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
-	mock.EXPECT().RecordSecurityCode(user.Phone, gomock.Any()).Return(dummyError)
+	mock.EXPECT().RecordSecurityCode(domain.SecurityCode{
+		Phone:        user.Phone,
+		SecurityCode: securityCode.SecurityCode,
+		Action:       security_code_signup_action,
+	}).Return(dummyError)
 
 	reporterMock := NewMockReporter(controller)
 	reporterMock.EXPECT().Report(gomock.Any())
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
-	err := core.requestSecurityCode(user.Phone)
+	err := core.requestSecurityCode(user.Phone, security_code_signup_action)
 	switch err == nil {
 	case true:
 		t.Errorf("Expected requestSecurityCode method to return error but no error returned")
