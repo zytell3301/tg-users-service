@@ -44,12 +44,6 @@ func newController(t *testing.T) *gomock.Controller {
 	return gomock.NewController(t)
 }
 
-func patchHasherFunc() {
-	monkey.Patch(hashExpression, func(expression string) string {
-		return securityCode.SecurityCode
-	})
-}
-
 /*
  * test case for normal request
  */
