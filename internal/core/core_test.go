@@ -1,7 +1,6 @@
 package core
 
 import (
-	"bou.ke/monkey"
 	"errors"
 	"github.com/golang/mock/gomock"
 	errors2 "github.com/zytell3301/tg-globals/errors"
@@ -291,8 +290,6 @@ func TestService_RequestSecurityCode(t *testing.T) {
 		SecurityCode: securityCode.SecurityCode,
 		Action:       security_code_signup_action,
 	}).Return(nil)
-	patchHasherFunc()
-	defer monkey.UnpatchAll()
 	reporterMock := NewMockReporter(controller)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
