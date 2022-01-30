@@ -3,11 +3,13 @@ package core
 import (
 	"errors"
 	"github.com/golang/mock/gomock"
+	ErrorReporter "github.com/zytell3301/tg-error-reporter"
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/tg-users-service/internal/repository"
 	"golang.org/x/crypto/bcrypt"
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -23,9 +25,11 @@ var user = domain.User{
 }
 
 var securityCode = domain.SecurityCode{
-	Phone: user.Phone,
+	Phone:  user.Phone,
 	Action: security_code_signup_action,
 }
+
+var wg *sync.WaitGroup
 
 var securityCodeRaw = "123456"
 
@@ -41,6 +45,14 @@ func init() {
 
 func newController(t *testing.T) *gomock.Controller {
 	return gomock.NewController(t)
+}
+
+func reportErrorPatch(_ ErrorReporter.Error) {
+	wg.Done()
+}
+
+func refreshWg() {
+	wg = &sync.WaitGroup{}
 }
 
 /*
@@ -62,7 +74,7 @@ func TestService_NewUser(t *testing.T) {
 
 	switch err != nil {
 	case true:
-		t.Errorf("Expected NewUser to succeed but error returned. Error: %v Error type: %v", err,reflect.TypeOf(err))
+		t.Errorf("Expected NewUser to succeed but error returned. Error: %v Error type: %v", err, reflect.TypeOf(err))
 	}
 }
 
@@ -92,6 +104,8 @@ func TestService_NewUser2(t *testing.T) {
  * Test case for internal failure
  */
 func TestService_NewUser3(t *testing.T) {
+	refreshWg()
+	wg.Add(1)
 	controller := newController(t)
 	defer controller.Finish()
 	repositoryMock := repository.NewMockUsersRepository(controller)
@@ -100,11 +114,12 @@ func TestService_NewUser3(t *testing.T) {
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
 	reporterMock := NewMockReporter(controller)
-	reporterMock.EXPECT().Report(gomock.Any())
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	core := NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 
 	err := core.NewUser(user, securityCodeRaw)
+	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
@@ -120,6 +135,8 @@ func TestService_NewUser3(t *testing.T) {
  * Test case for internal failure
  */
 func TestService_NewUser4(t *testing.T) {
+	refreshWg()
+	wg.Add(1)
 	controller := newController(t)
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
@@ -127,10 +144,11 @@ func TestService_NewUser4(t *testing.T) {
 	mock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
 	reporterMock := NewMockReporter(controller)
-	reporterMock.EXPECT().Report(gomock.Any())
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.NewUser(user, securityCodeRaw)
+	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
@@ -189,16 +207,19 @@ func TestService_UpdateUsername2(t *testing.T) {
  * Test case for internal failure
  */
 func TestService_UpdateUsername3(t *testing.T) {
+	refreshWg()
+	wg.Add(1)
 	controller := newController(t)
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DoesUsernameExists(newUsername).Return(false, dummyError)
 
 	reporterMock := NewMockReporter(controller)
-	reporterMock.EXPECT().Report(gomock.Any())
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.UpdateUsername(user.Phone, newUsername)
+	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected UpdateUsername to return error but no error returned")
@@ -213,6 +234,8 @@ func TestService_UpdateUsername3(t *testing.T) {
  * Test case for internal failure
  */
 func TestService_UpdateUsername4(t *testing.T) {
+	refreshWg()
+	wg.Add(1)
 	controller := newController(t)
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
@@ -220,10 +243,11 @@ func TestService_UpdateUsername4(t *testing.T) {
 	mock.EXPECT().UpdateUsername(user.Phone, newUsername).Return(dummyError)
 
 	reporterMock := NewMockReporter(controller)
-	reporterMock.EXPECT().Report(gomock.Any())
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.UpdateUsername(user.Phone, newUsername)
+	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected UpdateUsername to return error but no error returned")
@@ -257,17 +281,19 @@ func TestService_DeleteUser(t *testing.T) {
  * test case for internal failure
  */
 func TestService_DeleteUser2(t *testing.T) {
+	refreshWg()
+	wg.Add(1)
 	controller := newController(t)
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
 	mock.EXPECT().DeleteUser(user.Phone).Return(dummyError)
 
 	reporterMock := NewMockReporter(controller)
-	reporterMock.EXPECT().Report(gomock.Any())
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.DeleteUser(user.Phone)
-
+	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected DeleteUser to return error but no error returned")
@@ -304,6 +330,8 @@ func TestService_RequestSecurityCode(t *testing.T) {
  * Test case for Database failure
  */
 func TestService_RequestSecurityCode2(t *testing.T) {
+	refreshWg()
+	wg.Add(1)
 	controller := newController(t)
 	defer controller.Finish()
 	mock := repository.NewMockUsersRepository(controller)
@@ -314,10 +342,11 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 	}).Return(dummyError)
 
 	reporterMock := NewMockReporter(controller)
-	reporterMock.EXPECT().Report(gomock.Any())
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.requestSecurityCode(user.Phone, security_code_signup_action)
+	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected requestSecurityCode method to return error but no error returned")
