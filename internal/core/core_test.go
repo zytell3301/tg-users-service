@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bou.ke/monkey"
 	"errors"
 	"github.com/golang/mock/gomock"
 	ErrorReporter "github.com/zytell3301/tg-error-reporter"
@@ -53,6 +54,10 @@ func reportErrorPatch(_ ErrorReporter.Error) {
 
 func refreshWg() {
 	wg = &sync.WaitGroup{}
+}
+
+func hashExpressionPatch(expression string) string {
+	return securityCode.SecurityCode
 }
 
 /*
@@ -317,7 +322,8 @@ func TestService_RequestSecurityCode(t *testing.T) {
 		Action:       security_code_signup_action,
 	}).Return(nil)
 	reporterMock := NewMockReporter(controller)
-
+	monkey.Patch(hashExpression,hashExpressionPatch)
+	defer monkey.UnpatchAll()
 	core := NewUsersCore(mock, reporterMock, dummyInstanceId, dummyServiceId)
 	err := core.requestSecurityCode(user.Phone, security_code_signup_action)
 	switch err != nil {
@@ -341,6 +347,8 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 		Action:       security_code_signup_action,
 	}).Return(dummyError)
 
+	monkey.Patch(hashExpression, hashExpressionPatch)
+	defer monkey.UnpatchAll()
 	reporterMock := NewMockReporter(controller)
 	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
