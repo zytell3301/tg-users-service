@@ -33,10 +33,10 @@ var securityCode = domain.SecurityCode{
 
 var wg *sync.WaitGroup
 
-var ctrl *gomock.Controller
-var repoMock *repository.MockUsersRepository
-var rporterMock *MockReporter
-var cre Service
+var controller *gomock.Controller
+var repositoryMock *repository.MockUsersRepository
+var reporterMock *MockReporter
+var core Service
 
 var securityCodeRaw = "123456"
 
@@ -51,10 +51,10 @@ func init() {
 }
 
 func refresh(t *testing.T) {
-	ctrl = newController(t)
-	repoMock = repository.NewMockUsersRepository(ctrl)
-	rporterMock = NewMockReporter(ctrl)
-	cre = NewUsersCore(repoMock, rporterMock, dummyInstanceId, dummyServiceId)
+	controller = newController(t)
+	repositoryMock = repository.NewMockUsersRepository(controller)
+	reporterMock = NewMockReporter(controller)
+	core = NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
 }
 
 func newController(t *testing.T) *gomock.Controller {
@@ -78,16 +78,16 @@ func hashExpressionPatch(_ string) string {
  */
 func TestService_NewUser(t *testing.T) {
 	refresh(t)
-	defer ctrl.Finish()
-	repoMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
-	repoMock.EXPECT().NewUser(domain.User{
+	defer controller.Finish()
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
+	repositoryMock.EXPECT().NewUser(domain.User{
 		Name:     user.Name,
 		Lastname: user.Lastname,
 		Phone:    user.Phone,
 	})
-	repoMock.EXPECT().DoesUserExists(user.Phone)
+	repositoryMock.EXPECT().DoesUserExists(user.Phone)
 
-	err := cre.NewUser(user, securityCodeRaw)
+	err := core.NewUser(user, securityCodeRaw)
 
 	switch err != nil {
 	case true:
@@ -100,12 +100,12 @@ func TestService_NewUser(t *testing.T) {
  */
 func TestService_NewUser2(t *testing.T) {
 	refresh(t)
-	defer ctrl.Finish()
-	repoMock.EXPECT().NewUser(user).AnyTimes()
-	repoMock.EXPECT().DoesUserExists(user.Phone).Return(true, nil)
-	repoMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
+	defer controller.Finish()
+	repositoryMock.EXPECT().NewUser(user).AnyTimes()
+	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(true, nil)
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 
-	err := cre.NewUser(user, securityCodeRaw)
+	err := core.NewUser(user, securityCodeRaw)
 	switch err == nil || !errors.As(err, &UserAlreadyExists{}) {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
@@ -119,17 +119,17 @@ func TestService_NewUser3(t *testing.T) {
 	refresh(t)
 	refreshWg()
 	wg.Add(1)
-	defer ctrl.Finish()
-	repoMock.EXPECT().NewUser(domain.User{
+	defer controller.Finish()
+	repositoryMock.EXPECT().NewUser(domain.User{
 		Name:     user.Name,
 		Lastname: user.Lastname,
 		Phone:    user.Phone,
 	}).Return(dummyError)
-	repoMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
-	repoMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
-	rporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
+	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
-	err := cre.NewUser(user, securityCodeRaw)
+	err := core.NewUser(user, securityCodeRaw)
 	wg.Wait()
 	switch err == nil {
 	case true:
@@ -149,12 +149,12 @@ func TestService_NewUser4(t *testing.T) {
 	refresh(t)
 	refreshWg()
 	wg.Add(1)
-	defer ctrl.Finish()
-	repoMock.EXPECT().DoesUserExists(user.Phone).Return(false, dummyError)
-	repoMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
-	rporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
+	defer controller.Finish()
+	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, dummyError)
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
-	err := cre.NewUser(user, securityCodeRaw)
+	err := core.NewUser(user, securityCodeRaw)
 	wg.Wait()
 	switch err == nil {
 	case true:
@@ -171,11 +171,11 @@ func TestService_NewUser4(t *testing.T) {
  */
 func TestService_UpdateUsername(t *testing.T) {
 	refresh(t)
-	defer ctrl.Finish()
-	repoMock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
-	repoMock.EXPECT().UpdateUsername(user.Phone, newUsername)
+	defer controller.Finish()
+	repositoryMock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
+	repositoryMock.EXPECT().UpdateUsername(user.Phone, newUsername)
 
-	err := cre.UpdateUsername(user.Phone, newUsername)
+	err := core.UpdateUsername(user.Phone, newUsername)
 
 	switch err != nil {
 	case true:
@@ -188,10 +188,10 @@ func TestService_UpdateUsername(t *testing.T) {
  */
 func TestService_UpdateUsername2(t *testing.T) {
 	refresh(t)
-	defer ctrl.Finish()
-	repoMock.EXPECT().DoesUsernameExists(newUsername).Return(true, nil)
+	defer controller.Finish()
+	repositoryMock.EXPECT().DoesUsernameExists(newUsername).Return(true, nil)
 
-	err := cre.UpdateUsername(user.Phone, newUsername)
+	err := core.UpdateUsername(user.Phone, newUsername)
 	switch err == nil {
 	case true:
 		t.Errorf("Expected UpdateUsername to return error but no error returned")
@@ -209,11 +209,11 @@ func TestService_UpdateUsername3(t *testing.T) {
 	refresh(t)
 	refreshWg()
 	wg.Add(1)
-	defer ctrl.Finish()
-	repoMock.EXPECT().DoesUsernameExists(newUsername).Return(false, dummyError)
-	rporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
+	defer controller.Finish()
+	repositoryMock.EXPECT().DoesUsernameExists(newUsername).Return(false, dummyError)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
-	err := cre.UpdateUsername(user.Phone, newUsername)
+	err := core.UpdateUsername(user.Phone, newUsername)
 	wg.Wait()
 	switch err == nil {
 	case true:
@@ -232,12 +232,12 @@ func TestService_UpdateUsername4(t *testing.T) {
 	refresh(t)
 	refreshWg()
 	wg.Add(1)
-	defer ctrl.Finish()
-	repoMock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
-	repoMock.EXPECT().UpdateUsername(user.Phone, newUsername).Return(dummyError)
-	rporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
+	defer controller.Finish()
+	repositoryMock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
+	repositoryMock.EXPECT().UpdateUsername(user.Phone, newUsername).Return(dummyError)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
-	err := cre.UpdateUsername(user.Phone, newUsername)
+	err := core.UpdateUsername(user.Phone, newUsername)
 	wg.Wait()
 	switch err == nil {
 	case true:
@@ -254,10 +254,10 @@ func TestService_UpdateUsername4(t *testing.T) {
  */
 func TestService_DeleteUser(t *testing.T) {
 	refresh(t)
-	defer ctrl.Finish()
-	repoMock.EXPECT().DeleteUser(user.Phone)
+	defer controller.Finish()
+	repositoryMock.EXPECT().DeleteUser(user.Phone)
 
-	err := cre.DeleteUser(user.Phone)
+	err := core.DeleteUser(user.Phone)
 	switch err != nil {
 	case true:
 		t.Errorf("Expected DeleteUser to succeed but error returned. Error message: %v", err)
@@ -271,11 +271,11 @@ func TestService_DeleteUser2(t *testing.T) {
 	refresh(t)
 	refreshWg()
 	wg.Add(1)
-	defer ctrl.Finish()
-	repoMock.EXPECT().DeleteUser(user.Phone).Return(dummyError)
-	rporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
+	defer controller.Finish()
+	repositoryMock.EXPECT().DeleteUser(user.Phone).Return(dummyError)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
-	err := cre.DeleteUser(user.Phone)
+	err := core.DeleteUser(user.Phone)
 	wg.Wait()
 	switch err == nil {
 	case true:
@@ -292,8 +292,8 @@ func TestService_DeleteUser2(t *testing.T) {
  */
 func TestService_RequestSecurityCode(t *testing.T) {
 	refresh(t)
-	defer ctrl.Finish()
-	repoMock.EXPECT().RecordSecurityCode(domain.SecurityCode{
+	defer controller.Finish()
+	repositoryMock.EXPECT().RecordSecurityCode(domain.SecurityCode{
 		Phone:        user.Phone,
 		SecurityCode: securityCode.SecurityCode,
 		Action:       security_code_signup_action,
@@ -301,7 +301,7 @@ func TestService_RequestSecurityCode(t *testing.T) {
 	monkey.Patch(hashExpression, hashExpressionPatch)
 	defer monkey.UnpatchAll()
 
-	err := cre.requestSecurityCode(user.Phone, security_code_signup_action)
+	err := core.requestSecurityCode(user.Phone, security_code_signup_action)
 	switch err != nil {
 	case true:
 		t.Errorf("Expected requestSecurityCode method to succeed but an error returned. Error message %v", err)
@@ -315,8 +315,8 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 	refresh(t)
 	refreshWg()
 	wg.Add(1)
-	defer ctrl.Finish()
-	repoMock.EXPECT().RecordSecurityCode(domain.SecurityCode{
+	defer controller.Finish()
+	repositoryMock.EXPECT().RecordSecurityCode(domain.SecurityCode{
 		Phone:        user.Phone,
 		SecurityCode: securityCode.SecurityCode,
 		Action:       security_code_signup_action,
@@ -324,9 +324,9 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 
 	monkey.Patch(hashExpression, hashExpressionPatch)
 	defer monkey.UnpatchAll()
-	rporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
-	err := cre.requestSecurityCode(user.Phone, security_code_signup_action)
+	err := core.requestSecurityCode(user.Phone, security_code_signup_action)
 	wg.Wait()
 	switch err == nil {
 	case true:
