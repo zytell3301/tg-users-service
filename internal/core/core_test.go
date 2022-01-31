@@ -20,6 +20,7 @@ type qualifyUsername_parameter struct {
 }
 
 var user = domain.User{
+	Id:       "00000000-0000-0000-0000-000000000000",
 	Name:     "Arshiya",
 	Lastname: "Kiani",
 	Phone:    "+0000000000",
