@@ -80,7 +80,11 @@ func TestService_NewUser(t *testing.T) {
 	refresh(t)
 	defer ctrl.Finish()
 	repoMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
-	repoMock.EXPECT().NewUser(user)
+	repoMock.EXPECT().NewUser(domain.User{
+		Name:     user.Name,
+		Lastname: user.Lastname,
+		Phone:    user.Phone,
+	})
 	repoMock.EXPECT().DoesUserExists(user.Phone)
 
 	err := cre.NewUser(user, securityCodeRaw)
@@ -116,7 +120,11 @@ func TestService_NewUser3(t *testing.T) {
 	refreshWg()
 	wg.Add(1)
 	defer ctrl.Finish()
-	repoMock.EXPECT().NewUser(user).Return(dummyError)
+	repoMock.EXPECT().NewUser(domain.User{
+		Name:     user.Name,
+		Lastname: user.Lastname,
+		Phone:    user.Phone,
+	}).Return(dummyError)
 	repoMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
 	repoMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 	rporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
