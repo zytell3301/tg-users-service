@@ -461,7 +461,7 @@ func TestService_Login(t *testing.T) {
 	repositoryMock.EXPECT().GetUserByPhone(user.Phone).Return(user, nil)
 	patchGenerateUserCert()
 	defer monkey.UnpatchAll()
-	cert, err := core.Login(user.Phone, securityCodeRaw, security_code_login_action)
+	cert, err := core.Login(user.Phone, securityCodeRaw)
 	switch err != nil && string(cert) == string(dummyUserCert) {
 	case true:
 		t.Errorf("Expected method Login to succeed but error returned. Error message: %s Error type: %s", err.Error(), reflect.TypeOf(err))
@@ -480,7 +480,7 @@ func TestService_Login2(t *testing.T) {
 	generateUserCertError = true
 	patchGenerateUserCert()
 	defer monkey.UnpatchAll()
-	_, err := core.Login(user.Phone, securityCodeRaw, security_code_login_action)
+	_, err := core.Login(user.Phone, securityCodeRaw)
 	switch err == nil {
 	case true:
 		t.Errorf("Expected method Login to return error but no error returned")

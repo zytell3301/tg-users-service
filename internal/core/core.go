@@ -82,8 +82,8 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 /**
  * Generate a certificate for corresponding user if provided security code is correct.
  */
-func (s Service) Login(phone string, securityCode string, action string) ([]byte, error) {
-	err := s.VerifySecurityCode(phone, securityCode, action)
+func (s Service) Login(phone string, securityCode string) ([]byte, error) {
+	err := s.VerifySecurityCode(phone, securityCode, security_code_login_action)
 	switch err != nil {
 	case true:
 		switch errors2.As(err, &SecurityCodeNotValid{}) {
