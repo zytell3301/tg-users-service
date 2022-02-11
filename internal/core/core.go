@@ -23,7 +23,7 @@ type Service struct {
 	ErrorReporter ErrorReporter.Reporter
 	instanceId    string
 	serviceId     string
-	certGen       *CertGen.CertGen
+	certGen       CertGen.Gen
 }
 
 const (
@@ -31,12 +31,13 @@ const (
 	security_code_login_action  = "LOGIN"
 )
 
-func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, instanceId string, serviceId string) Service {
+func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, certGen CertGen.Gen, instanceId string, serviceId string) Service {
 	return Service{
 		repository:    repository,
 		ErrorReporter: errorReporter,
 		instanceId:    instanceId,
 		serviceId:     serviceId,
+		certGen:       certGen,
 	}
 }
 
