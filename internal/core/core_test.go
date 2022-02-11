@@ -79,7 +79,7 @@ func hashExpressionPatch(_ string) string {
 	return securityCode.SecurityCode
 }
 
-func pathGenerateUserCert() {
+func patchGenerateUserCert() {
 	monkey.Patch(Service.generateUserCert, generateUserCertPatch)
 }
 
@@ -459,7 +459,7 @@ func TestService_Login(t *testing.T) {
 	securityCode.Action = security_code_login_action
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 	repositoryMock.EXPECT().GetUserByPhone(user.Phone).Return(user, nil)
-	pathGenerateUserCert()
+	patchGenerateUserCert()
 	defer monkey.UnpatchAll()
 	cert, err := core.Login(user.Phone, securityCodeRaw, security_code_login_action)
 	switch err != nil && string(cert) == string(dummyUserCert) {
@@ -478,7 +478,7 @@ func TestService_Login2(t *testing.T) {
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 	repositoryMock.EXPECT().GetUserByPhone(user.Phone).Return(user, nil)
 	generateUserCertError = true
-	pathGenerateUserCert()
+	patchGenerateUserCert()
 	defer monkey.UnpatchAll()
 	_, err := core.Login(user.Phone, securityCodeRaw, security_code_login_action)
 	switch err == nil {
