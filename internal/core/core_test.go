@@ -8,6 +8,7 @@ import (
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/tg-users-service/internal/repository"
+	"github.com/zytell3301/tg-users-service/pkg/CertGen"
 	"golang.org/x/crypto/bcrypt"
 	"reflect"
 	"sync"
@@ -36,6 +37,7 @@ var wg *sync.WaitGroup
 var controller *gomock.Controller
 var repositoryMock *repository.MockUsersRepository
 var reporterMock *MockReporter
+var certGenMock *CertGen.MockGen
 var core Service
 
 var securityCodeRaw = "123456"
@@ -54,7 +56,8 @@ func refresh(t *testing.T) {
 	controller = newController(t)
 	repositoryMock = repository.NewMockUsersRepository(controller)
 	reporterMock = NewMockReporter(controller)
-	core = NewUsersCore(repositoryMock, reporterMock, dummyInstanceId, dummyServiceId)
+	certGenMock = CertGen.NewMockGen(controller)
+	core = NewUsersCore(repositoryMock, reporterMock, certGenMock, dummyInstanceId, dummyServiceId)
 }
 
 func newController(t *testing.T) *gomock.Controller {
