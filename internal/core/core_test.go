@@ -467,3 +467,22 @@ func TestService_Login(t *testing.T) {
 		t.Errorf("Expected method Login to succeed but error returned. Error message: %s Error type: %s", err.Error(), reflect.TypeOf(err))
 	}
 }
+
+/*
+ * test case for certificate failure
+ */
+func TestService_Login2(t *testing.T) {
+	refresh(t)
+	defer controller.Finish()
+	securityCode.Action = security_code_login_action
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
+	repositoryMock.EXPECT().GetUserByPhone(user.Phone).Return(user, nil)
+	generateUserCertError = true
+	pathGenerateUserCert()
+	defer monkey.UnpatchAll()
+	_, err := core.Login(user.Phone, securityCodeRaw, security_code_login_action)
+	switch err == nil {
+	case true:
+		t.Errorf("Expected method Login to return error but no error returned")
+	}
+}
