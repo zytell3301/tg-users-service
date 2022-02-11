@@ -486,3 +486,19 @@ func TestService_Login2(t *testing.T) {
 		t.Errorf("Expected method Login to return error but no error returned")
 	}
 }
+
+/**
+ * test case for security code validation failure
+ */
+func TestService_Login3(t *testing.T) {
+	refresh(t)
+	defer controller.Finish()
+	securityCode.Action = security_code_login_action
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(domain.SecurityCode{}, dummyError)
+
+	_, err := core.Login(user.Phone, securityCodeRaw)
+	switch err == nil {
+	case true:
+		t.Errorf("Expected method login to return error but no error returned")
+	}
+}
