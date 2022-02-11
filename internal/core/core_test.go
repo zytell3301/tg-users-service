@@ -47,6 +47,9 @@ var dummyError = errors.New("")
 var dummyInstanceId = "b8b342e2-3c8a-41f6-8f28-53042ae12519"
 var dummyServiceId = "199adc34-f9fd-425e-b721-d5e2b400d289"
 
+var generateUserCertError bool
+var dummyUserCert = []byte("dummy cert")
+
 func init() {
 	hashedSecurityCode, _ := bcrypt.GenerateFromPassword([]byte(securityCodeRaw), 12)
 	securityCode.SecurityCode = string(hashedSecurityCode)
@@ -74,6 +77,19 @@ func refreshWg() {
 
 func hashExpressionPatch(_ string) string {
 	return securityCode.SecurityCode
+}
+
+func pathGenerateUserCert() {
+	monkey.Patch(Service.generateUserCert, generateUserCertPatch)
+}
+
+func generateUserCertPatch(core Service, user domain.User) ([]byte, error) {
+	switch generateUserCertError {
+	case true:
+		return dummyUserCert, dummyError
+	default:
+		return dummyUserCert, nil
+	}
 }
 
 /*
@@ -431,5 +447,23 @@ func Test_qualifyUsername1(t *testing.T) {
 		case true:
 			t.Errorf("Expected qualifyUsername method to return true but returned false for valid username: %v", parameter.username)
 		}
+	}
+}
+
+/*
+ * normal test case
+ */
+func TestService_Login(t *testing.T) {
+	refresh(t)
+	defer controller.Finish()
+	securityCode.Action = security_code_login_action
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
+	repositoryMock.EXPECT().GetUserByPhone(user.Phone).Return(user, nil)
+	pathGenerateUserCert()
+	defer monkey.UnpatchAll()
+	cert, err := core.Login(user.Phone, securityCodeRaw, security_code_login_action)
+	switch err != nil && string(cert) == string(dummyUserCert) {
+	case true:
+		t.Errorf("Expected method Login to succeed but error returned. Error message: %s Error type: %s", err.Error(), reflect.TypeOf(err))
 	}
 }
