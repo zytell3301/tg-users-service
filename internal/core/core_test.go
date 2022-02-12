@@ -502,3 +502,21 @@ func TestService_Login3(t *testing.T) {
 		t.Errorf("Expected method login to return error but no error returned")
 	}
 }
+
+func TestService_Login4(t *testing.T) {
+	refresh(t)
+	refreshWg()
+	wg.Add(1)
+	defer controller.Finish()
+	securityCode.Action = security_code_login_action
+	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
+	repositoryMock.EXPECT().GetUserByPhone(user.Phone).Return(domain.User{}, dummyError)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
+
+	_, err := core.Login(user.Phone, securityCodeRaw)
+	wg.Wait()
+	switch err == nil {
+	case true:
+		t.Errorf("Expected method login to return error but no error returned")
+	}
+}
