@@ -492,11 +492,15 @@ func TestService_Login2(t *testing.T) {
  */
 func TestService_Login3(t *testing.T) {
 	refresh(t)
+	refreshWg()
+	wg.Add(1)
 	defer controller.Finish()
 	securityCode.Action = security_code_login_action
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(domain.SecurityCode{}, dummyError)
+	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	_, err := core.Login(user.Phone, securityCodeRaw)
+	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected method login to return error but no error returned")
