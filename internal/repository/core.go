@@ -94,6 +94,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 		usersMetadata:           usersMetadata,
 		usersPkPhoneMetadata:    usersPkPhoneMetadata,
 		usersPkUsernameMetadata: usersPkUsernameMetadata,
+		securityCodesMetaData:   securityCodesMetaData,
 		idGenerator:             generator,
 	}, nil
 }
