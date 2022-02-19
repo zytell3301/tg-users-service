@@ -50,7 +50,7 @@ func (h Handler) DeleteUser(ctx context.Context, phone *UsersService.Phone) (*er
 	err := h.core.DeleteUser(phone.Phone)
 
 	switch {
-	case errors.As(err, core.UserNotFound{}):
+	case errors.As(err, &core.UserNotFound{}):
 		return &error1.Error{
 			Message: core.UserNotFoundError.Message,
 			Code:    core.UserNotFoundError.Code,
@@ -66,13 +66,13 @@ func (h Handler) UpdateUsername(ctx context.Context, message *UsersService.Updat
 	err := h.core.UpdateUsername(message.Phone, message.Username)
 
 	switch {
-	case errors.As(err, core.UsernameNotQualified{}):
+	case errors.As(err, &core.UsernameNotQualified{}):
 		return &error1.Error{
 			Message: core.UsernameNotQualifiedError.Message,
 			Code:    core.UsernameNotQualifiedError.Code,
 		}, nil
 
-	case errors.As(err, core.UsernameAlreadyExists{}):
+	case errors.As(err, &core.UsernameAlreadyExists{}):
 		return &error1.Error{
 			Message: core.UsernameAlreadyExistsError.Message,
 			Code:    core.UsernameAlreadyExistsError.Code,
