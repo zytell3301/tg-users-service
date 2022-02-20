@@ -11,4 +11,5 @@ type UsersRepository interface {
 	RecordSecurityCode(securityCode domain.SecurityCode) error
 	GetSecurityCode(phone string) (domain.SecurityCode, error)
 	GetUserByPhone(phone string) (domain.User, error)
+	GetUserByUsername(username string) (domain.User, error)
 }
