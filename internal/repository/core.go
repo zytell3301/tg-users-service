@@ -120,10 +120,6 @@ func (r Repository) NewUser(user domain.User) (err error) {
 		"online_status": user.Online_status,
 		"created_at":    user.Created_at,
 	}
-	switch err != nil {
-	case true:
-		return
-	}
 	err = r.usersMetadata.NewRecord(data, batch)
 	switch err != nil {
 	case true:
