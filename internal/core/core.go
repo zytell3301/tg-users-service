@@ -20,8 +20,6 @@ import (
 type Service struct {
 	repository    UsersRepository
 	ErrorReporter ErrorReporter.Reporter
-	instanceId    string
-	serviceId     string
 	certGen       CertGen.Gen
 }
 
@@ -30,12 +28,10 @@ const (
 	security_code_login_action  = "LOGIN"
 )
 
-func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, certGen CertGen.Gen, instanceId string, serviceId string) Service {
+func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, certGen CertGen.Gen) Service {
 	return Service{
 		repository:    repository,
 		ErrorReporter: errorReporter,
-		instanceId:    instanceId,
-		serviceId:     serviceId,
 		certGen:       certGen,
 	}
 }
