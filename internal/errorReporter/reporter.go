@@ -32,5 +32,5 @@ func NewReporter(instanceId string, serviceId string) reporter {
 }
 
 func ReportError(message string, parameters ...string) {
-	go Reporter.reportError(message, parameters)
+	go Reporter.reportError(message, parameters...)
 }
