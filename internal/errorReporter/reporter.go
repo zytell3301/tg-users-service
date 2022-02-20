@@ -16,10 +16,11 @@ type reporter struct {
 
 var Reporter reporter
 
-func NewReporter(instanceId string, serviceId string) reporter {
+func NewReporter(instanceId string, serviceId string, errorReporter ErrorReporter.Reporter) reporter {
 	r := reporter{
-		instanceId: instanceId,
-		serviceId:  serviceId,
+		instanceId:    instanceId,
+		serviceId:     serviceId,
+		errorReporter: errorReporter,
 	}
 	r.reportError = func(message string, parameters ...string) {
 		r.errorReporter.Report(ErrorReporter.Error{
