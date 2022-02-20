@@ -118,7 +118,7 @@ func (s Service) generateUserCert(user domain.User) ([]byte, error) {
 	})
 	switch err != nil {
 	case true:
-		s.reportErr("generating certificate", err)
+		s.reportError("generating certificate", err)
 	}
 	return cert, err
 }
@@ -282,50 +282,42 @@ func (s Service) GetUserByUsername(username string) (domain.User, error) {
 }
 
 /**
- * Reports service errors to central error recorder.
- * Message layout can be in format of fmt.Sprintf with its parameters
- */
-func (s Service) reportError(message string, parameters ...string) {
-	errorReporter.ReportError(message, parameters...)
-}
-
-/**
  * Reports service errors to central error recorder with a pre-defined message
  */
-func (s Service) reportErr(subject string, err error) {
-	s.reportError("An error occurred while %s. Error message: %s", subject, err.Error())
+func (s Service) reportError(subject string, err error) {
+	errorReporter.ReportError("An error occurred while %s. Error message: %s", subject, err.Error())
 }
 
 func (s Service) reportGetSecurityCodeError(err error) {
-	s.reportErr("fetching security code from repository", err)
+	s.reportError("fetching security code from repository", err)
 }
 
 func (s Service) reportDoesUserExistsError(err error) {
-	s.reportErr("checking for user existence", err)
+	s.reportError("checking for user existence", err)
 }
 
 func (s Service) reportDeleteUserError(err error) {
-	s.reportErr("deleting user from database", err)
+	s.reportError("deleting user from database", err)
 }
 
 func (s Service) reportRequestSecurityCodeError(err error) {
-	s.reportErr("recording security code on database", err)
+	s.reportError("recording security code on database", err)
 }
 
 func (s Service) reportDoesUsernameExistsError(err error) {
-	s.reportErr("checking for username existence", err)
+	s.reportError("checking for username existence", err)
 }
 
 func (s Service) reportUpdateUsernameError(err error) {
-	s.reportErr("updating username in database", err)
+	s.reportError("updating username in database", err)
 }
 
 func (s Service) reportNewUserError(err error) {
-	s.reportErr("inserting user into database", err)
+	s.reportError("inserting user into database", err)
 }
 
 func (s Service) reportGetUserByPhoneError(err error) {
-	s.reportErr("fetching user from database", err)
+	s.reportError("fetching user from database", err)
 }
 
 func hashExpression(expression string) string {
