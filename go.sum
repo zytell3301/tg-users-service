@@ -359,6 +359,8 @@ github.com/zytell3301/tg-error-reporter v0.0.0-20220110231906-5eee1b7d6497 h1:pe
 github.com/zytell3301/tg-error-reporter v0.0.0-20220110231906-5eee1b7d6497/go.mod h1:R+kx1OqTYdYvhvcZwQgmF2zfn1eEhE3qLIuJwcGKMjE=
 github.com/zytell3301/tg-globals v0.0.0-20220105231139-8446b0bf0fd7 h1:/DRp9THScKBpfLKvMKbszvM0Qx2YUtUSAyV3TrZbY30=
 github.com/zytell3301/tg-globals v0.0.0-20220105231139-8446b0bf0fd7/go.mod h1:JbNFEJEqy+L2Xl1ubcTpst2VUU2HvXqniKIHgukCcRM=
+github.com/zytell3301/tg-globals v0.0.0-20220220204730-f74dd32ca4de h1:FNsfaKdvYJCONwnNRZ3q/YHRLh0TNyw7+SFpOmX29L8=
+github.com/zytell3301/tg-globals v0.0.0-20220220204730-f74dd32ca4de/go.mod h1:JbNFEJEqy+L2Xl1ubcTpst2VUU2HvXqniKIHgukCcRM=
 github.com/zytell3301/uuid-generator v0.0.0-20211105141829-f5b70d07ddec/go.mod h1:qLqL0VUqTxC+Awbn/Twa3dEIwt2GBRb10fstB3WfF+Q=
 github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad h1:QAYaDR7faTp/GHkk84qM7wOKVrxwEV8W6qvilh10/JQ=
 github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad/go.mod h1:qLqL0VUqTxC+Awbn/Twa3dEIwt2GBRb10fstB3WfF+Q=
