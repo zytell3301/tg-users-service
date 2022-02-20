@@ -32,6 +32,10 @@ func NewReporter(instanceId string, serviceId string, errorReporter ErrorReporte
 	return r
 }
 
+func InitiateReporter(instanceId string, serviceId string, errorReporter ErrorReporter.Reporter) {
+	Reporter = NewReporter(instanceId, serviceId, errorReporter)
+}
+
 func ReportError(message string, parameters ...string) {
 	go Reporter.reportError(message, parameters...)
 }
