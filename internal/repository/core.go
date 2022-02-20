@@ -6,6 +6,7 @@ import (
 	"github.com/zytell3301/cassandra-query-builder"
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
+	"github.com/zytell3301/tg-users-service/internal/errorReporter"
 	uuid_generator "github.com/zytell3301/uuid-generator"
 	"time"
 )
@@ -351,4 +352,11 @@ func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
 		Action:       securityCode["action"].(string),
 		CreatedAt:    securityCode["created_at"].(time.Time),
 	}, nil
+}
+
+/**
+ * Reports errors to central error recorder
+ */
+func reportError(subject string, err error) {
+	errorReporter.ReportError("An error occurred while %s. Error message: %s", subject, err.Error())
 }
