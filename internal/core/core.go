@@ -272,6 +272,19 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	return nil
 }
 
+func (s Service) GetUserByUsername(username string) (domain.User, error) {
+	user, err := s.repository.GetUserByUsername(username)
+	switch err != nil {
+	case true:
+		switch errors2.As(err, errors.EntityNotFound{}) {
+		case true:
+			return domain.User{}, UserNotFound{}
+		}
+		return domain.User{}, errors.InternalError{}
+	}
+	return user, nil
+}
+
 /**
  * Reports service errors to central error recorder.
  * Message layout can be in format of fmt.Sprintf with its parameters
