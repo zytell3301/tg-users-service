@@ -6,7 +6,6 @@ import (
 	"crypto/x509/pkix"
 	errors2 "errors"
 	"fmt"
-	"github.com/gocql/gocql"
 	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
@@ -96,7 +95,7 @@ func (s Service) Login(phone string, securityCode string) ([]byte, error) {
 	user, err := s.repository.GetUserByPhone(phone)
 	switch err != nil {
 	case true:
-		switch errors2.Is(err, gocql.ErrNotFound) {
+		switch errors2.As(err, errors.EntityNotFound{}) {
 		case true:
 			return nil, UserNotFound{}
 		default:
