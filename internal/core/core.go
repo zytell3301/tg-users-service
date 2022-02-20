@@ -5,7 +5,6 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	errors2 "errors"
-	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/tg-users-service/internal/errorReporter"
@@ -19,7 +18,6 @@ import (
 
 type Service struct {
 	repository    UsersRepository
-	ErrorReporter ErrorReporter.Reporter
 	certGen       CertGen.Gen
 }
 
@@ -28,11 +26,10 @@ const (
 	security_code_login_action  = "LOGIN"
 )
 
-func NewUsersCore(repository UsersRepository, errorReporter ErrorReporter.Reporter, certGen CertGen.Gen) Service {
+func NewUsersCore(repository UsersRepository, certGen CertGen.Gen) Service {
 	return Service{
-		repository:    repository,
-		ErrorReporter: errorReporter,
-		certGen:       certGen,
+		repository: repository,
+		certGen:    certGen,
 	}
 }
 
