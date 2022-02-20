@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gocql/gocql"
 	"github.com/zytell3301/cassandra-query-builder"
+	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	uuid_generator "github.com/zytell3301/uuid-generator"
 	"time"
@@ -253,6 +254,10 @@ func (r Repository) getIdByUsername(username string) (string, error) {
 	case true:
 		return "", err
 	}
+	switch errors.Is(err, gocql.ErrNotFound) {
+	case true:
+		return "", errors2.EntityNotFound{}
+	}
 	return user["id"].(gocql.UUID).String(), nil
 }
 
@@ -265,6 +270,10 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 	user, err := r.usersMetadata.GetRecord(map[string]interface{}{"id": id}, []string{"*"})
 	switch err != nil {
 	case true:
+		switch errors.Is(err, gocql.ErrNotFound) {
+		case true:
+			return domain.User{}, errors2.EntityNotFound{}
+		}
 		return domain.User{}, err
 	}
 	return domain.User{
@@ -280,7 +289,16 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 }
 
 func (r Repository) GetUserByPhone(phone string) (domain.User, error) {
-	return r.getUserByPhone(phone)
+	user, err := r.getUserByPhone(phone)
+	switch err != nil {
+	case true:
+		switch errors.Is(err, gocql.ErrNotFound) {
+		case true:
+			return domain.User{}, errors2.EntityNotFound{}
+		}
+		return domain.User{}, err
+	}
+	return user, nil
 }
 
 func (r Repository) getUserByPhone(phone string) (domain.User, error) {
@@ -317,6 +335,10 @@ func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
 	securityCode, err := r.securityCodesMetaData.GetRecord(map[string]interface{}{"phone": phone}, []string{"phone", "code", "writetime(code) as created_at"})
 	switch err != nil {
 	case true:
+		switch errors.Is(err, gocql.ErrNotFound) {
+		case true:
+			return domain.SecurityCode{}, errors2.EntityNotFound{}
+		}
 		return domain.SecurityCode{}, err
 	}
 	return domain.SecurityCode{
