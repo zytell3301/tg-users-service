@@ -7,6 +7,7 @@ import (
 	ErrorReporter "github.com/zytell3301/tg-error-reporter"
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
+	"github.com/zytell3301/tg-users-service/internal/errorReporter"
 	"github.com/zytell3301/tg-users-service/internal/repository"
 	"github.com/zytell3301/tg-users-service/pkg/CertGen"
 	"golang.org/x/crypto/bcrypt"
@@ -60,7 +61,8 @@ func refresh(t *testing.T) {
 	repositoryMock = repository.NewMockUsersRepository(controller)
 	reporterMock = NewMockReporter(controller)
 	certGenMock = CertGen.NewMockGen(controller)
-	core = NewUsersCore(repositoryMock, reporterMock, certGenMock, dummyInstanceId, dummyServiceId)
+	errorReporter.InitiateReporter(dummyInstanceId, dummyServiceId, reporterMock)
+	core = NewUsersCore(repositoryMock, certGenMock)
 }
 
 func newController(t *testing.T) *gomock.Controller {
