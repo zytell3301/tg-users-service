@@ -5,10 +5,10 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	errors2 "errors"
-	"fmt"
 	"github.com/zytell3301/tg-error-reporter"
 	"github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
+	"github.com/zytell3301/tg-users-service/internal/errorReporter"
 	"github.com/zytell3301/tg-users-service/pkg/CertGen"
 	"golang.org/x/crypto/bcrypt"
 	"math/big"
@@ -290,11 +290,7 @@ func (s Service) GetUserByUsername(username string) (domain.User, error) {
  * Message layout can be in format of fmt.Sprintf with its parameters
  */
 func (s Service) reportError(message string, parameters ...string) {
-	go s.ErrorReporter.Report(ErrorReporter.Error{
-		ServiceId:  s.serviceId,
-		InstanceId: s.instanceId,
-		Message:    fmt.Sprintf(message, parameters),
-	})
+	errorReporter.ReportError(message, parameters...)
 }
 
 /**
