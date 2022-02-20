@@ -360,3 +360,7 @@ func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
 func reportError(subject string, err error) {
 	errorReporter.ReportError("An error occurred while %s. Error message: %s", subject, err.Error())
 }
+
+func reportQueryError(err error) {
+	reportError("executing a query", err)
+}
