@@ -88,7 +88,7 @@ func (s Service) Login(phone string, securityCode string) ([]byte, error) {
 	user, err := s.repository.GetUserByPhone(phone)
 	switch err != nil {
 	case true:
-		switch errors2.As(err, errors.EntityNotFound{}) {
+		switch errors2.As(err, &errors.EntityNotFound{}) {
 		case true:
 			return nil, UserNotFound{}
 		default:
@@ -269,7 +269,7 @@ func (s Service) GetUserByUsername(username string) (domain.User, error) {
 	user, err := s.repository.GetUserByUsername(username)
 	switch err != nil {
 	case true:
-		switch errors2.As(err, errors.EntityNotFound{}) {
+		switch errors2.As(err, &errors.EntityNotFound{}) {
 		case true:
 			return domain.User{}, UserNotFound{}
 		}
