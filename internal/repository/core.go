@@ -261,6 +261,10 @@ func (r Repository) getIdByUsername(username string) (string, error) {
 	return user["id"].(gocql.UUID).String(), nil
 }
 
+func (r Repository) GetUserByUsername(username string) (domain.User, error) {
+	return r.getUserByUsername(username)
+}
+
 func (r Repository) getUserByUsername(username string) (domain.User, error) {
 	id, err := r.getIdByUsername(username)
 	switch err != nil {
