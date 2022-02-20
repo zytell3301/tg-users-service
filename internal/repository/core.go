@@ -154,6 +154,10 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 	batch := r.connection.Session.NewBatch(gocql.UnloggedBatch)
 	user, err := r.getUserByPhone(phone)
 
+	/**
+	 * In this case gocql.ErrNotFound is not needed to be checked because the username
+	 * existence is checked before in core
+	 */
 	switch err != nil {
 	case true:
 		return
