@@ -138,8 +138,6 @@ func TestService_NewUser2(t *testing.T) {
  */
 func TestService_NewUser3(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	repositoryMock.EXPECT().NewUser(domain.User{
 		Name:     user.Name,
@@ -148,10 +146,8 @@ func TestService_NewUser3(t *testing.T) {
 	}).Return(dummyError)
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, nil)
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	err := core.NewUser(user, securityCodeRaw)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
@@ -168,15 +164,11 @@ func TestService_NewUser3(t *testing.T) {
  */
 func TestService_NewUser4(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	repositoryMock.EXPECT().DoesUserExists(user.Phone).Return(false, dummyError)
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	err := core.NewUser(user, securityCodeRaw)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected NewUser to return error but no error returned")
@@ -228,14 +220,10 @@ func TestService_UpdateUsername2(t *testing.T) {
  */
 func TestService_UpdateUsername3(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	repositoryMock.EXPECT().DoesUsernameExists(newUsername).Return(false, dummyError)
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	err := core.UpdateUsername(user.Phone, newUsername)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected UpdateUsername to return error but no error returned")
@@ -251,15 +239,11 @@ func TestService_UpdateUsername3(t *testing.T) {
  */
 func TestService_UpdateUsername4(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	repositoryMock.EXPECT().DoesUsernameExists(newUsername).Return(false, nil)
 	repositoryMock.EXPECT().UpdateUsername(user.Phone, newUsername).Return(dummyError)
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	err := core.UpdateUsername(user.Phone, newUsername)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected UpdateUsername to return error but no error returned")
@@ -290,14 +274,10 @@ func TestService_DeleteUser(t *testing.T) {
  */
 func TestService_DeleteUser2(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	repositoryMock.EXPECT().DeleteUser(user.Phone).Return(dummyError)
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	err := core.DeleteUser(user.Phone)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected DeleteUser to return error but no error returned")
@@ -334,8 +314,6 @@ func TestService_RequestSecurityCode(t *testing.T) {
  */
 func TestService_RequestSecurityCode2(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	repositoryMock.EXPECT().RecordSecurityCode(domain.SecurityCode{
 		Phone:        user.Phone,
@@ -345,10 +323,8 @@ func TestService_RequestSecurityCode2(t *testing.T) {
 
 	monkey.Patch(hashExpression, hashExpressionPatch)
 	defer monkey.UnpatchAll()
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	err := core.requestSecurityCode(user.Phone, security_code_signup_action)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected requestSecurityCode method to return error but no error returned")
@@ -494,15 +470,11 @@ func TestService_Login2(t *testing.T) {
  */
 func TestService_Login3(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	securityCode.Action = security_code_login_action
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(domain.SecurityCode{}, dummyError)
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	_, err := core.Login(user.Phone, securityCodeRaw)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected method login to return error but no error returned")
@@ -511,16 +483,12 @@ func TestService_Login3(t *testing.T) {
 
 func TestService_Login4(t *testing.T) {
 	refresh(t)
-	refreshWg()
-	wg.Add(1)
 	defer controller.Finish()
 	securityCode.Action = security_code_login_action
 	repositoryMock.EXPECT().GetSecurityCode(user.Phone).Return(securityCode, nil)
 	repositoryMock.EXPECT().GetUserByPhone(user.Phone).Return(domain.User{}, dummyError)
-	reporterMock.EXPECT().Report(gomock.Any()).Do(reportErrorPatch)
 
 	_, err := core.Login(user.Phone, securityCodeRaw)
-	wg.Wait()
 	switch err == nil {
 	case true:
 		t.Errorf("Expected method login to return error but no error returned")
