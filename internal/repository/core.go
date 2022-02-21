@@ -84,7 +84,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 	switch err != nil {
 	case true:
 		reportError("creating connection to cassandra database", err)
-		return Repository{}, err
+		return Repository{}, errors2.InternalError{}
 	}
 
 	connection.Session = session
@@ -108,7 +108,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 	switch err != nil {
 	case true:
 		reportError("generating uuid", err)
-		return err
+		return errors2.InternalError{}
 	}
 	data := map[string]interface{}{
 		"id":            id.String(),
@@ -124,7 +124,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 
 	err = r.usersPkPhoneMetadata.NewRecord(map[string]interface{}{
@@ -138,16 +138,20 @@ func (r Repository) NewUser(user domain.User) (err error) {
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 
 	err = r.usersPkUsernameMetadata.NewRecord(map[string]interface{}{"id": id.String(), "username": user.Username}, batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 	err = r.connection.Session.ExecuteBatch(batch)
+	switch err != nil {
+	case true:
+		return errors2.InternalError{}
+	}
 	return
 }
 
@@ -161,34 +165,34 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 	 */
 	switch err != nil {
 	case true:
-		return
+		return errors2.InternalError{}
 	}
 
 	err = r.usersPkPhoneMetadata.UpdateRecord(map[string]interface{}{"phone": phone}, map[string]interface{}{"username": username}, batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 
 	err = r.usersMetadata.UpdateRecord(map[string]interface{}{"id": user.Id}, map[string]interface{}{"username": username}, batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 
 	err = r.usersPkUsernameMetadata.DeleteRecord(map[string]interface{}{"username": user.Username}, batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 
 	batch = r.connection.Session.NewBatch(gocql.UnloggedBatch)
@@ -196,13 +200,14 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
+		return errors2.InternalError{}
 	}
 	return
 }
@@ -212,25 +217,26 @@ func (r Repository) DeleteUser(phone string) (err error) {
 	user, err := r.getUserByPhone(phone)
 	switch err != nil {
 	case true:
-		return
+		return errors2.InternalError{}
 	}
 	err = r.usersPkPhoneMetadata.DeleteRecord(map[string]interface{}{"phone": phone}, batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 
 	err = r.usersMetadata.DeleteRecord(map[string]interface{}{"id": user.Id}, batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
-		return
+		return errors2.InternalError{}
 	}
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
 		reportQueryError(err)
+		return errors2.InternalError{}
 	}
 	return
 }
@@ -248,7 +254,7 @@ func (r Repository) DoesUserExists(phone string) (bool, error) {
 	}
 	switch err != nil {
 	case true:
-		return false, err
+		return false, errors2.InternalError{}
 	}
 	return true, nil
 }
@@ -261,7 +267,7 @@ func (r Repository) DoesUsernameExists(username string) (bool, error) {
 		case true:
 			return false, nil
 		default:
-			return false, err
+			return false, errors2.InternalError{}
 		}
 	default:
 		return true, nil
@@ -276,7 +282,7 @@ func (r Repository) getIdByUsername(username string) (string, error) {
 		case false:
 			reportQueryError(err)
 		}
-		return "", err
+		return "", errors2.InternalError{}
 	}
 	return user["id"].(gocql.UUID).String(), nil
 }
@@ -289,7 +295,7 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 	id, err := r.getIdByUsername(username)
 	switch err != nil {
 	case true:
-		return domain.User{}, err
+		return domain.User{}, errors2.InternalError{}
 	}
 	user, err := r.usersMetadata.GetRecord(map[string]interface{}{"id": id}, []string{"*"})
 	switch err != nil {
@@ -299,7 +305,7 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 			return domain.User{}, errors2.EntityNotFound{}
 		}
 		reportQueryError(err)
-		return domain.User{}, err
+		return domain.User{}, errors2.InternalError{}
 	}
 	return domain.User{
 		Id:            user["id"].(gocql.UUID).String(),
@@ -321,7 +327,7 @@ func (r Repository) GetUserByPhone(phone string) (domain.User, error) {
 		case true:
 			return domain.User{}, errors2.EntityNotFound{}
 		}
-		return domain.User{}, err
+		return domain.User{}, errors2.InternalError{}
 	}
 	return user, nil
 }
@@ -334,7 +340,7 @@ func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 		case false:
 			reportQueryError(err)
 		}
-		return domain.User{}, err
+		return domain.User{}, errors2.InternalError{}
 	}
 	return domain.User{
 		Id:       user["id"].(gocql.UUID).String(),
@@ -370,7 +376,7 @@ func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
 			return domain.SecurityCode{}, errors2.EntityNotFound{}
 		}
 		reportQueryError(err)
-		return domain.SecurityCode{}, err
+		return domain.SecurityCode{}, errors2.InternalError{}
 	}
 	return domain.SecurityCode{
 		Phone:        securityCode["phone"].(string),
