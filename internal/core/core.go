@@ -50,7 +50,6 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	doesExists, err := s.repository.DoesUserExists(user.Phone)
 	switch err != nil {
 	case true:
-		s.reportDoesUserExistsError(err)
 		return errors.InternalError{}
 	}
 	switch doesExists {
@@ -64,7 +63,6 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 	})
 	switch err != nil {
 	case true:
-		s.reportNewUserError(err)
 		return errors.InternalError{}
 	}
 
@@ -92,7 +90,6 @@ func (s Service) Login(phone string, securityCode string) ([]byte, error) {
 		case true:
 			return nil, UserNotFound{}
 		default:
-			s.reportGetUserByPhoneError(err)
 			return nil, errors.InternalError{}
 		}
 	}
@@ -134,7 +131,6 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	doesExists, err := s.repository.DoesUsernameExists(username)
 	switch err != nil {
 	case true:
-		s.reportDoesUsernameExistsError(err)
 		return errors.InternalError{}
 	}
 	switch doesExists {
@@ -144,7 +140,6 @@ func (s Service) UpdateUsername(phone string, username string) (err error) {
 	err = s.repository.UpdateUsername(phone, username)
 	switch err != nil {
 	case true:
-		s.reportUpdateUsernameError(err)
 		return errors.InternalError{}
 	}
 
@@ -180,7 +175,6 @@ func (s Service) DeleteUser(phone string) (err error) {
 	err = s.repository.DeleteUser(phone)
 	switch err != nil {
 	case true:
-		s.reportDeleteUserError(err)
 		return errors.InternalError{}
 	}
 
@@ -195,7 +189,6 @@ func (s Service) RequestSignupSecurityCode(phone string) error {
 	doesExists, err := s.repository.DoesUserExists(phone)
 	switch err != nil {
 	case true:
-		s.reportDoesUserExistsError(err)
 		return errors.InternalError{}
 	}
 	switch doesExists {
@@ -214,7 +207,7 @@ func (s Service) RequestLoginSecurityCode(phone string) error {
 	doesExists, err := s.repository.DoesUserExists(phone)
 	switch err != nil {
 	case true:
-		s.reportDoesUserExistsError(err)
+		return errors.InternalError{}
 	}
 	switch doesExists {
 	case false:
@@ -235,10 +228,6 @@ func (s Service) requestSecurityCode(phone string, action string) (err error) {
 		Action:       action,
 		SecurityCode: securityCode,
 	})
-	switch err != nil {
-	case true:
-		s.reportRequestSecurityCodeError(err)
-	}
 	return
 }
 
@@ -251,7 +240,6 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	securityCode, err := s.repository.GetSecurityCode(phone)
 	switch err != nil {
 	case true:
-		s.reportGetSecurityCodeError(err)
 		return errors.InternalError{}
 	}
 	switch checkHashMatch(code, securityCode.SecurityCode) {
@@ -283,38 +271,6 @@ func (s Service) GetUserByUsername(username string) (domain.User, error) {
  */
 func (s Service) reportError(subject string, err error) {
 	errorReporter.ReportError("An error occurred while %s. Error message: %s", subject, err.Error())
-}
-
-func (s Service) reportGetSecurityCodeError(err error) {
-	s.reportError("fetching security code from repository", err)
-}
-
-func (s Service) reportDoesUserExistsError(err error) {
-	s.reportError("checking for user existence", err)
-}
-
-func (s Service) reportDeleteUserError(err error) {
-	s.reportError("deleting user from database", err)
-}
-
-func (s Service) reportRequestSecurityCodeError(err error) {
-	s.reportError("recording security code on database", err)
-}
-
-func (s Service) reportDoesUsernameExistsError(err error) {
-	s.reportError("checking for username existence", err)
-}
-
-func (s Service) reportUpdateUsernameError(err error) {
-	s.reportError("updating username in database", err)
-}
-
-func (s Service) reportNewUserError(err error) {
-	s.reportError("inserting user into database", err)
-}
-
-func (s Service) reportGetUserByPhoneError(err error) {
-	s.reportError("fetching user from database", err)
 }
 
 func hashExpression(expression string) string {
