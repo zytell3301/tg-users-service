@@ -24,7 +24,7 @@ func NewReporter(instanceId string, serviceId string, errorReporter ErrorReporte
 	}
 	r.reportError = func(message string, parameters ...string) {
 		r.errorReporter.Report(ErrorReporter.Error{
-			ServiceId:  r.serviceId,
+			ServiceGroupId:  r.serviceId,
 			InstanceId: r.instanceId,
 			Message:    fmt.Sprintf(message, parameters),
 		})
