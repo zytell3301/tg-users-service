@@ -38,21 +38,9 @@ func main() {
 	configs := configs{}
 	configs.repositoryConfigs = loadRepositoryConfigs()
 	configs.serviceConfigs = loadServiceConfigs()
-	uuidGenerator, err := uuid_generator.NewGenerator(configs.serviceConfigs.uuidSpace)
-	switch err != nil {
-	case true:
-		log.Fatalf("An error occurred while initiating uuid generator instance. Error message: %v", err)
-	}
-	repo, err := repository.NewUsersRepository(configs.repositoryConfigs.hosts, configs.repositoryConfigs.keyspace, uuidGenerator)
-	switch err != nil {
-	case true:
-		log.Fatalf("An error occurred while creating users repository. Error message: %v", err)
-	}
-	certGen, err := CertGen.NewCertGenerator(getCertificate(), getCertificateKey())
-	switch err != nil {
-	case true:
-		panic(fmt.Sprintf("An error occurred while creating certGen instance. Error message: %s", err.Error()))
-	}
+	uuidGenerator := newUuidGenerator(configs.serviceConfigs.uuidSpace)
+	repo := newUsersRepo(configs.repositoryConfigs.hosts, configs.repositoryConfigs.keyspace, uuidGenerator)
+	certGen := newCertgen()
 	usersCore := core2.NewUsersCore(repo, certGen)
 	grpcHandler := grpcHandlers.NewHandler(usersCore)
 	listener, err := net.Listen("tcp", configs.serviceConfigs.nodeIp+":"+configs.serviceConfigs.servicePort)
@@ -76,6 +64,33 @@ func loadConfig(config string) *viper.Viper {
 		log.Fatalf("An error occurred while reading configs. Error message: %v", err)
 	}
 	return cfg
+}
+
+func newUuidGenerator(space string) *uuid_generator.Generator {
+	uuidGenerator, err := uuid_generator.NewGenerator(space)
+	switch err != nil {
+	case true:
+		log.Fatalf("An error occurred while initiating uuid generator instance. Error message: %v", err)
+	}
+	return uuidGenerator
+}
+
+func newUsersRepo(hosts []string, keyspace string, uuidGenerator *uuid_generator.Generator) repository.Repository {
+	repo, err := repository.NewUsersRepository(hosts, keyspace, uuidGenerator)
+	switch err != nil {
+	case true:
+		log.Fatalf("An error occurred while creating users repository. Error message: %v", err)
+	}
+	return repo
+}
+
+func newCertgen() CertGen.CertGen {
+	certGen, err := CertGen.NewCertGenerator(getCertificate(), getCertificateKey())
+	switch err != nil {
+	case true:
+		panic(fmt.Sprintf("An error occurred while creating certGen instance. Error message: %s", err.Error()))
+	}
+	return certGen
 }
 
 func loadRepositoryConfigs() (config repositoryConfigs) {
