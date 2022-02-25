@@ -9,3 +9,10 @@ api/pb
 # An example is included for every configuration file instead
 # of setting examples in original file
 configs/configs.yaml
+
+# The user must generate private certificates for himself. Because
+# this forces the programmer to generate new private certificates and don't
+# use the default ones (You know. Hackers may realize that you are using
+# default certificates)
+auth-certificates/certificate.pem
+auth-certificates/key.pem
