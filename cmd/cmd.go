@@ -43,11 +43,11 @@ func main() {
 	certGen := newCertgen()
 	usersCore := core2.NewUsersCore(repo, certGen)
 	grpcHandler := grpcHandlers.NewHandler(usersCore)
-	listener, err := net.Listen("tcp", configs.serviceConfigs.nodeIp+":"+configs.serviceConfigs.servicePort)
+	listener := newListener(configs)
 	grpcServer := grpc.NewServer()
 	UsersService.RegisterUsersServiceServer(grpcServer, grpcHandler)
 	fmt.Println("Serving grpc server")
-	err = grpcServer.Serve(listener)
+	err := grpcServer.Serve(listener)
 	switch err != nil {
 	case true:
 		log.Fatalf("An error occurred while starting grpc servcice. Error message: %v", err)
@@ -98,6 +98,15 @@ func newCertgen() CertGen.CertGen {
 	}
 	fmt.Println("CertGen instance created successfully")
 	return certGen
+}
+
+func newListener(configs configs) net.Listener {
+	listener, err := net.Listen("tcp", configs.serviceConfigs.nodeIp+":"+configs.serviceConfigs.servicePort)
+	switch err != nil {
+	case true:
+		panic(fmt.Sprintf("An error occurred while creating tcp listener. Error message: %s", err.Error()))
+	}
+	return listener
 }
 
 func loadRepositoryConfigs() (config repositoryConfigs) {
