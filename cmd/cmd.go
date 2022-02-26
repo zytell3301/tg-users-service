@@ -16,7 +16,7 @@ import (
 	"os"
 )
 
-const ProjectRoot = "./.."
+const ProjectRoot = "."
 
 type configs struct {
 	repositoryConfigs repositoryConfigs
