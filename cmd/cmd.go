@@ -46,6 +46,7 @@ func main() {
 	listener, err := net.Listen("tcp", configs.serviceConfigs.nodeIp+":"+configs.serviceConfigs.servicePort)
 	grpcServer := grpc.NewServer()
 	UsersService.RegisterUsersServiceServer(grpcServer, grpcHandler)
+	fmt.Println("Serving grpc server")
 	err = grpcServer.Serve(listener)
 	switch err != nil {
 	case true:
@@ -67,48 +68,59 @@ func loadConfig(config string) *viper.Viper {
 }
 
 func newUuidGenerator(space string) *uuid_generator.Generator {
+	fmt.Println("Creating uuid generator instance...")
 	uuidGenerator, err := uuid_generator.NewGenerator(space)
 	switch err != nil {
 	case true:
 		log.Fatalf("An error occurred while initiating uuid generator instance. Error message: %v", err)
 	}
+	fmt.Println("Uuid generator instance created successfully")
 	return uuidGenerator
 }
 
 func newUsersRepo(hosts []string, keyspace string, uuidGenerator *uuid_generator.Generator) repository.Repository {
+	fmt.Println("Creating new users repository instance...")
 	repo, err := repository.NewUsersRepository(hosts, keyspace, uuidGenerator)
 	switch err != nil {
 	case true:
 		log.Fatalf("An error occurred while creating users repository. Error message: %v", err)
 	}
+	fmt.Println("Users repository created successfullyy")
 	return repo
 }
 
 func newCertgen() CertGen.CertGen {
+	fmt.Println("Creating certGen instance...")
 	certGen, err := CertGen.NewCertGenerator(getCertificate(), getCertificateKey())
 	switch err != nil {
 	case true:
 		panic(fmt.Sprintf("An error occurred while creating certGen instance. Error message: %s", err.Error()))
 	}
+	fmt.Println("CertGen instance created successfully")
 	return certGen
 }
 
 func loadRepositoryConfigs() (config repositoryConfigs) {
+	fmt.Println("Loading repository configs")
 	cfg := loadConfig("repository")
 	config.hosts = cfg.GetStringSlice("hosts")
 	config.keyspace = cfg.GetString("keyspace")
+	fmt.Println("Repository cofig loaded successfully")
 	return
 }
 
 func loadServiceConfigs() (config serviceConfigs) {
+	fmt.Println("Loading service configs")
 	cfg := loadConfig("service")
 	config.nodeIp = cfg.GetString("node-ip")
 	config.servicePort = cfg.GetString("service-port")
 	config.uuidSpace = cfg.GetString("uuid-space")
+	fmt.Println("Service configs loaded successfully")
 	return
 }
 
 func getCertificate() []byte {
+	fmt.Println("Service root certificate is being loaded")
 	file, err := os.Open("./auth-certificates/certificate.pem")
 	switch err != nil {
 	case true:
@@ -119,10 +131,12 @@ func getCertificate() []byte {
 	case true:
 		panic(fmt.Sprintf("An error occurred while reading root certificate. Error messge: %s", err.Error()))
 	}
+	fmt.Println("Service root certificate loaded successfully")
 	return cert
 }
 
 func getCertificateKey() []byte {
+	fmt.Println("Service certificate private key is being loaded")
 	file, err := os.Open("./auth-certificates/key.pem")
 	switch err != nil {
 	case true:
@@ -133,5 +147,6 @@ func getCertificateKey() []byte {
 	case true:
 		panic(fmt.Sprintf("An error occurred while reading certificate key file. Error message: %s", err.Error()))
 	}
+	fmt.Println("Service certificate private key loaded successfully")
 	return cert
 }
