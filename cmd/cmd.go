@@ -85,7 +85,7 @@ func newUsersRepo(hosts []string, keyspace string, uuidGenerator *uuid_generator
 	case true:
 		log.Fatalf("An error occurred while creating users repository. Error message: %v", err)
 	}
-	fmt.Println("Users repository created successfullyy")
+	fmt.Println("Users repository created successfully")
 	return repo
 }
 
