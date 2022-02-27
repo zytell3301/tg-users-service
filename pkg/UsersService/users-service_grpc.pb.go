@@ -22,6 +22,7 @@ type UsersServiceClient interface {
 	NewUser(ctx context.Context, in *NewUserMessage, opts ...grpc.CallOption) (*error1.Error, error)
 	DeleteUser(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*error1.Error, error)
 	UpdateUsername(ctx context.Context, in *UpdateUsernameMessage, opts ...grpc.CallOption) (*error1.Error, error)
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 }
 
 type usersServiceClient struct {
@@ -59,6 +60,15 @@ func (c *usersServiceClient) UpdateUsername(ctx context.Context, in *UpdateUsern
 	return out, nil
 }
 
+func (c *usersServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, "/zytell3301.UsersService.UsersService/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServiceServer is the server API for UsersService service.
 // All implementations must embed UnimplementedUsersServiceServer
 // for forward compatibility
@@ -66,6 +76,7 @@ type UsersServiceServer interface {
 	NewUser(context.Context, *NewUserMessage) (*error1.Error, error)
 	DeleteUser(context.Context, *Phone) (*error1.Error, error)
 	UpdateUsername(context.Context, *UpdateUsernameMessage) (*error1.Error, error)
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
 
@@ -81,6 +92,9 @@ func (UnimplementedUsersServiceServer) DeleteUser(context.Context, *Phone) (*err
 }
 func (UnimplementedUsersServiceServer) UpdateUsername(context.Context, *UpdateUsernameMessage) (*error1.Error, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUsername not implemented")
+}
+func (UnimplementedUsersServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedUsersServiceServer) mustEmbedUnimplementedUsersServiceServer() {}
 
@@ -149,6 +163,24 @@ func _UsersService_UpdateUsername_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/zytell3301.UsersService.UsersService/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UsersService_ServiceDesc is the grpc.ServiceDesc for UsersService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -167,6 +199,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUsername",
 			Handler:    _UsersService_UpdateUsername_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _UsersService_Login_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
