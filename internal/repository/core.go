@@ -84,7 +84,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 	switch err != nil {
 	case true:
 		reportError("creating connection to cassandra database", err)
-		return Repository{}, errors2.InternalError{}
+		return Repository{}, err
 	}
 
 	connection.Session = session
