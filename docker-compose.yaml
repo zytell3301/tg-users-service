@@ -1,0 +1,22 @@
+services:
+  tg-users-service:
+    image: tg-users-service:0.0.1
+    networks:
+      - default-net
+  cassandra-4.0.3:
+    image: cassandra:4.0.3
+    networks:
+      - default-net
+    ports:
+      - 9043:9042
+      - 7000:7000
+    restart: on-failure
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    container_name: cassandra-4.0.3
+networks:
+  default-net:
+    external:
+      name: default-net
+volumes:
+  cassandra-data:
