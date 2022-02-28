@@ -5,6 +5,7 @@ services:
       - default-net
     ports:
     - 4042:4042
+    restart: on-failure
   cassandra-4.0.3:
     image: cassandra:4.0.3
     networks:
