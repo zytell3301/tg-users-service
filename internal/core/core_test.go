@@ -4,7 +4,6 @@ import (
 	"bou.ke/monkey"
 	"errors"
 	"github.com/golang/mock/gomock"
-	ErrorReporter "github.com/zytell3301/tg-error-reporter"
 	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/tg-users-service/internal/errorReporter"
@@ -12,7 +11,6 @@ import (
 	"github.com/zytell3301/tg-users-service/pkg/CertGen"
 	"golang.org/x/crypto/bcrypt"
 	"reflect"
-	"sync"
 	"testing"
 )
 
@@ -33,7 +31,7 @@ var securityCode = domain.SecurityCode{
 	Action: security_code_signup_action,
 }
 
-var wg *sync.WaitGroup
+//var wg *sync.WaitGroup
 
 var controller *gomock.Controller
 var repositoryMock *repository.MockUsersRepository
@@ -69,13 +67,13 @@ func newController(t *testing.T) *gomock.Controller {
 	return gomock.NewController(t)
 }
 
-func reportErrorPatch(_ ErrorReporter.Error) {
-	wg.Done()
-}
+//func reportErrorPatch(_ ErrorReporter.Error) {
+//	wg.Done()
+//}
 
-func refreshWg() {
-	wg = &sync.WaitGroup{}
-}
+//func refreshWg() {
+//	wg = &sync.WaitGroup{}
+//}
 
 func hashExpressionPatch(_ string) string {
 	return securityCode.SecurityCode

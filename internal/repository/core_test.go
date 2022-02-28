@@ -18,7 +18,7 @@ var dummyUser = domain.User{
 	Online_status: false,
 	Created_at:    time.Now(),
 }
-var dummyUserId = "5a087beb-4ba5-4583-b2a0-bce500395e1a"
+//var dummyUserId = "5a087beb-4ba5-4583-b2a0-bce500395e1a"
 var keyspace = "tg"
 
 func TestNewUsersRepository(t *testing.T) {
