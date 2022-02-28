@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	ErrorReporter "github.com/zytell3301/tg-error-reporter"
 	core2 "github.com/zytell3301/tg-users-service/internal/core"
+	"github.com/zytell3301/tg-users-service/internal/errorReporter"
 	"github.com/zytell3301/tg-users-service/internal/handlers/grpcHandlers"
 	"github.com/zytell3301/tg-users-service/internal/repository"
 	"github.com/zytell3301/tg-users-service/pkg/CertGen"
@@ -40,6 +42,7 @@ func main() {
 	configs := configs{}
 	configs.repositoryConfigs = loadRepositoryConfigs()
 	configs.serviceConfigs = loadServiceConfigs()
+	errorReporter.InitiateReporter(configs.serviceConfigs.instanceId, configs.serviceConfigs.serviceId, ErrorReporter.DefaultReporter{})
 	uuidGenerator := newUuidGenerator(configs.serviceConfigs.uuidSpace)
 	repo := newUsersRepo(configs.repositoryConfigs.hosts, configs.repositoryConfigs.keyspace, uuidGenerator)
 	certGen := newCertgen()
