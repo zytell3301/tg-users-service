@@ -131,3 +131,20 @@ func (h Handler) RequestSignupSecurityCode(_ context.Context, request *UsersServ
 	}
 	return nil, nil
 }
+
+func (h Handler) RequestLoginSecurityCode(_ context.Context, request *UsersService.Phone) (*error1.Error, error) {
+	err := h.core.RequestLoginSecurityCode(request.Phone)
+	switch {
+	case errors.As(err, &errors2.InternalError{}):
+		return &error1.Error{
+			Message: errors2.InternalErrorOccurred.Message,
+			Code:    errors2.InternalErrorOccurred.Code,
+		}, nil
+	case errors.As(err, &core.UserNotFound{}):
+		return &error1.Error{
+			Message: core.UserNotFoundError.Message,
+			Code:    core.UserNotFoundError.Code,
+		}, nil
+	}
+	return nil, nil
+}
