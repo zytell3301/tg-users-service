@@ -91,7 +91,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 	usersMetadata.Connection = connection.Session
 	usersPkPhoneMetadata.Connection = connection.Session
 	usersPkUsernameMetadata.Connection = connection.Session
-
+	securityCodesMetaData.Connection = connection.Session
 	return Repository{
 		connection:              connection,
 		usersMetadata:           usersMetadata,
