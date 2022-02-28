@@ -71,6 +71,10 @@ func (s Service) NewUser(user domain.User, securityCode string) (err error) {
 
 /**
  * Generate a certificate for corresponding user if provided security code is correct.
+ * Returned errors:
+ * 1-SecurityCodeNotValid
+ * 2-InternalError
+ * 3-UserNotFound
  */
 func (s Service) Login(phone string, securityCode string) ([]byte, error) {
 	err := s.VerifySecurityCode(phone, securityCode, security_code_login_action)
