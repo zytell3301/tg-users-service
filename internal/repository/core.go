@@ -111,14 +111,10 @@ func (r Repository) NewUser(user domain.User) (err error) {
 		return errors2.InternalError{}
 	}
 	data := map[string]interface{}{
-		"id":            id.String(),
-		"username":      user.Username,
-		"name":          user.Name,
-		"lastname":      user.Lastname,
-		"phone":         user.Phone,
-		"bio":           user.Bio,
-		"online_status": user.Online_status,
-		"created_at":    user.Created_at,
+		"id":       id.String(),
+		"name":     user.Name,
+		"lastname": user.Lastname,
+		"phone":    user.Phone,
 	}
 	err = r.usersMetadata.NewRecord(data, batch)
 	switch err != nil {
@@ -141,12 +137,6 @@ func (r Repository) NewUser(user domain.User) (err error) {
 		return errors2.InternalError{}
 	}
 
-	err = r.usersPkUsernameMetadata.NewRecord(map[string]interface{}{"id": id.String(), "username": user.Username}, batch)
-	switch err != nil {
-	case true:
-		reportQueryError(err)
-		return errors2.InternalError{}
-	}
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
