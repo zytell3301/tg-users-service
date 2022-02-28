@@ -1,0 +1,12 @@
+run:
+  concurrency: 4
+  timeout: 2m
+
+output:
+  format: colored-line-number
+  sort-results: true
+
+linters:
+  enable:
+    - asciicheck
+    - bodyclose
