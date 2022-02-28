@@ -170,3 +170,33 @@ func (h Handler) VerifySecurityCode(_ context.Context, request *UsersService.Ver
 	}
 	return nil, nil
 }
+
+func (h Handler) GetUserByUsername(_ context.Context, request *UsersService.GetUserByUsernameRequest) (*UsersService.GetUserByUsernameResponse, error) {
+	user, err := h.core.GetUserByUsername(request.Username)
+	switch {
+	case errors.As(err, &errors2.InternalError{}):
+		return &UsersService.GetUserByUsernameResponse{
+			Error: &error1.Error{
+				Message: errors2.InternalErrorOccurred.Message,
+				Code:    errors2.InternalErrorOccurred.Code,
+			},
+		}, nil
+	case errors.As(err, &core.UserNotFound{}):
+		return &UsersService.GetUserByUsernameResponse{
+			Error: &error1.Error{
+				Message: core.UserNotFoundError.Message,
+				Code:    core.UserNotFoundError.Code,
+			},
+		}, nil
+	}
+	return &UsersService.GetUserByUsernameResponse{
+		User: &UsersService.User{
+			Id:           user.Id,
+			Name:         user.Name,
+			Lastname:     user.Lastname,
+			Bio:          user.Bio,
+			Username:     user.Username,
+			OnlineStatus: user.Online_status,
+		},
+	}, nil
+}
