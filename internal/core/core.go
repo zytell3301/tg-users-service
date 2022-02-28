@@ -245,6 +245,7 @@ func (s Service) requestSecurityCode(phone string, action string) (err error) {
  * Verifies given security code and action.
  * If the security code is incorrect SecurityCodeNotValid error will be returned.
  * If the security code is correct but the action is incorrect, SecurityCodeActionDoesNotMatch will be returned
+ * @TODO Determine maximum attempts for security code validation
  */
 func (s Service) VerifySecurityCode(phone string, code string, action string) error {
 	securityCode, err := s.repository.GetSecurityCode(phone)
