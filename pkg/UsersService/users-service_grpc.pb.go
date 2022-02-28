@@ -26,6 +26,7 @@ type UsersServiceClient interface {
 	RequestSignupSecurityCode(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*error1.Error, error)
 	RequestLoginSecurityCode(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*error1.Error, error)
 	VerifySecurityCode(ctx context.Context, in *VerifySecurityCodeRequest, opts ...grpc.CallOption) (*error1.Error, error)
+	GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, opts ...grpc.CallOption) (*GetUserByUsernameResponse, error)
 }
 
 type usersServiceClient struct {
@@ -99,6 +100,15 @@ func (c *usersServiceClient) VerifySecurityCode(ctx context.Context, in *VerifyS
 	return out, nil
 }
 
+func (c *usersServiceClient) GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, opts ...grpc.CallOption) (*GetUserByUsernameResponse, error) {
+	out := new(GetUserByUsernameResponse)
+	err := c.cc.Invoke(ctx, "/zytell3301.UsersService.UsersService/GetUserByUsername", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServiceServer is the server API for UsersService service.
 // All implementations must embed UnimplementedUsersServiceServer
 // for forward compatibility
@@ -110,6 +120,7 @@ type UsersServiceServer interface {
 	RequestSignupSecurityCode(context.Context, *Phone) (*error1.Error, error)
 	RequestLoginSecurityCode(context.Context, *Phone) (*error1.Error, error)
 	VerifySecurityCode(context.Context, *VerifySecurityCodeRequest) (*error1.Error, error)
+	GetUserByUsername(context.Context, *GetUserByUsernameRequest) (*GetUserByUsernameResponse, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
 
@@ -137,6 +148,9 @@ func (UnimplementedUsersServiceServer) RequestLoginSecurityCode(context.Context,
 }
 func (UnimplementedUsersServiceServer) VerifySecurityCode(context.Context, *VerifySecurityCodeRequest) (*error1.Error, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifySecurityCode not implemented")
+}
+func (UnimplementedUsersServiceServer) GetUserByUsername(context.Context, *GetUserByUsernameRequest) (*GetUserByUsernameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUsername not implemented")
 }
 func (UnimplementedUsersServiceServer) mustEmbedUnimplementedUsersServiceServer() {}
 
@@ -277,6 +291,24 @@ func _UsersService_VerifySecurityCode_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_GetUserByUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByUsernameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).GetUserByUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/zytell3301.UsersService.UsersService/GetUserByUsername",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).GetUserByUsername(ctx, req.(*GetUserByUsernameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UsersService_ServiceDesc is the grpc.ServiceDesc for UsersService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -311,6 +343,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifySecurityCode",
 			Handler:    _UsersService_VerifySecurityCode_Handler,
+		},
+		{
+			MethodName: "GetUserByUsername",
+			Handler:    _UsersService_GetUserByUsername_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
