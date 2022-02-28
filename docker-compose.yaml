@@ -3,6 +3,8 @@ services:
     image: tg-users-service:0.0.1
     networks:
       - default-net
+    ports:
+    - 4043:4043
   cassandra-4.0.3:
     image: cassandra:4.0.3
     networks:
