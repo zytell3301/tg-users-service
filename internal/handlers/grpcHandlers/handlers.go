@@ -3,6 +3,7 @@ package grpcHandlers
 import (
 	"context"
 	"errors"
+	errors2 "github.com/zytell3301/tg-globals/errors"
 	"github.com/zytell3301/tg-users-service/internal/core"
 	"github.com/zytell3301/tg-users-service/internal/domain"
 	"github.com/zytell3301/tg-users-service/pkg/UsersService"
@@ -81,5 +82,35 @@ func (h Handler) UpdateUsername(ctx context.Context, message *UsersService.Updat
 
 	return &error1.Error{
 		Code: 0,
+	}, nil
+}
+
+func (h Handler) Login(_ context.Context, request *UsersService.LoginRequest) (*UsersService.LoginResponse, error) {
+	cert, err := h.core.Login(request.Phone, request.Phone)
+	switch {
+	case errors.As(err, &core.SecurityCodeNotValid{}):
+		return &UsersService.LoginResponse{
+			Error: &error1.Error{
+				Message: core.SecurityCodeNotValidError.Message,
+				Code:    core.SecurityCodeNotValidError.Code,
+			},
+		}, nil
+	case errors.As(err, &errors2.InternalError{}):
+		return &UsersService.LoginResponse{
+			Error: &error1.Error{
+				Message: errors2.InternalErrorOccurred.Message,
+				Code:    errors2.InternalErrorOccurred.Code,
+			},
+		}, nil
+	case errors.As(err, &core.UserNotFound{}):
+		return &UsersService.LoginResponse{
+			Error: &error1.Error{
+				Message: core.UserNotFoundError.Message,
+				Code:    core.UserNotFoundError.Code,
+			},
+		}, nil
+	}
+	return &UsersService.LoginResponse{
+		Certificate: cert,
 	}, nil
 }
