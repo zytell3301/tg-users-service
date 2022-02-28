@@ -359,6 +359,8 @@ github.com/zytell3301/tg-error-reporter v0.0.0-20220110231906-5eee1b7d6497 h1:pe
 github.com/zytell3301/tg-error-reporter v0.0.0-20220110231906-5eee1b7d6497/go.mod h1:R+kx1OqTYdYvhvcZwQgmF2zfn1eEhE3qLIuJwcGKMjE=
 github.com/zytell3301/tg-error-reporter v0.0.0-20220221220703-4ee78e265db8 h1:LUD+yYY6DrmYZJnxADYjWEcqe3889VMxSDhgxp0yIto=
 github.com/zytell3301/tg-error-reporter v0.0.0-20220221220703-4ee78e265db8/go.mod h1:R+kx1OqTYdYvhvcZwQgmF2zfn1eEhE3qLIuJwcGKMjE=
+github.com/zytell3301/tg-error-reporter v0.0.0-20220228214811-e270737d4fab h1:62u8ybS6D/XfRmhuR5boIu2g/71eBdm73uCP7GAuaOg=
+github.com/zytell3301/tg-error-reporter v0.0.0-20220228214811-e270737d4fab/go.mod h1:R+kx1OqTYdYvhvcZwQgmF2zfn1eEhE3qLIuJwcGKMjE=
 github.com/zytell3301/tg-globals v0.0.0-20220105231139-8446b0bf0fd7 h1:/DRp9THScKBpfLKvMKbszvM0Qx2YUtUSAyV3TrZbY30=
 github.com/zytell3301/tg-globals v0.0.0-20220105231139-8446b0bf0fd7/go.mod h1:JbNFEJEqy+L2Xl1ubcTpst2VUU2HvXqniKIHgukCcRM=
 github.com/zytell3301/tg-globals v0.0.0-20220220204730-f74dd32ca4de h1:FNsfaKdvYJCONwnNRZ3q/YHRLh0TNyw7+SFpOmX29L8=
