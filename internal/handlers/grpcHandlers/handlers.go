@@ -157,10 +157,15 @@ func (h Handler) VerifySecurityCode(_ context.Context, request *UsersService.Ver
 			Message: errors2.InternalErrorOccurred.Message,
 			Code:    errors2.InternalErrorOccurred.Code,
 		}, nil
-	case errors.As(err, &core.UserNotFound{}):
+	case errors.As(err, &core.SecurityCodeNotValid{}):
 		return &error1.Error{
-			Message: core.UserNotFoundError.Message,
-			Code:    core.UserNotFoundError.Code,
+			Message: core.SecurityCodeNotValidError.Message,
+			Code:    core.SecurityCodeNotValidError.Code,
+		}, nil
+	case errors.As(err, &core.SecurityCodeActionDoesNotMatch{}):
+		return &error1.Error{
+			Message: core.SecurityCodeActionDoesNotMatchError.Message,
+			Code:    core.SecurityCodeActionDoesNotMatchError.Code,
 		}, nil
 	}
 	return nil, nil
