@@ -188,6 +188,9 @@ func (s Service) DeleteUser(phone string) (err error) {
 /**
  * Creates a new security code for only signing up.
  * If the user already exists UserAlreadyExists error will be returned.
+ * Returned errors:
+ * 1-InternalError
+ * 2-UserAlreadyExists
  */
 func (s Service) RequestSignupSecurityCode(phone string) error {
 	doesExists, err := s.repository.DoesUserExists(phone)
