@@ -209,6 +209,9 @@ func (s Service) RequestSignupSecurityCode(phone string) error {
 /**
  * Creates a new security code only for login.
  * If the user does not exists UserNotFound error will be returned
+ * Returned errors:
+ * 1-InternalError
+ * 2-UserNotFound
  */
 func (s Service) RequestLoginSecurityCode(phone string) error {
 	doesExists, err := s.repository.DoesUserExists(phone)
