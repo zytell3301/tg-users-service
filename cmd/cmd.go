@@ -27,6 +27,8 @@ type serviceConfigs struct {
 	nodeIp      string
 	servicePort string
 	uuidSpace   string
+	serviceId   string
+	instanceId  string
 }
 
 type repositoryConfigs struct {
@@ -124,6 +126,8 @@ func loadServiceConfigs() (config serviceConfigs) {
 	config.nodeIp = cfg.GetString("node-ip")
 	config.servicePort = cfg.GetString("service-port")
 	config.uuidSpace = cfg.GetString("uuid-space")
+	config.serviceId = cfg.GetString("service-id")
+	config.instanceId = cfg.GetString("instance-id")
 	fmt.Println("Service configs loaded successfully")
 	return
 }
