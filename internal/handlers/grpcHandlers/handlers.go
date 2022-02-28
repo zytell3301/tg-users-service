@@ -114,3 +114,20 @@ func (h Handler) Login(_ context.Context, request *UsersService.LoginRequest) (*
 		Certificate: cert,
 	}, nil
 }
+
+func (h Handler) RequestSignupSecurityCode(_ context.Context, request *UsersService.Phone) (*error1.Error, error) {
+	err := h.core.RequestSignupSecurityCode(request.Phone)
+	switch {
+	case errors.As(err, &errors2.InternalError{}):
+		return &error1.Error{
+			Message: errors2.InternalErrorOccurred.Message,
+			Code:    errors2.InternalErrorOccurred.Code,
+		}, nil
+	case errors.As(err, &core.UserAlreadyExists{}):
+		return &error1.Error{
+			Message: core.UserAlreadyExistsError.Message,
+			Code:    core.UserAlreadyExistsError.Code,
+		}, nil
+	}
+	return nil, nil
+}
