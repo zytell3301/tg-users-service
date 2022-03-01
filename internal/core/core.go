@@ -17,8 +17,8 @@ import (
 )
 
 type Service struct {
-	repository    UsersRepository
-	certGen       CertGen.Gen
+	repository UsersRepository
+	certGen    CertGen.Gen
 }
 
 const (
@@ -255,6 +255,10 @@ func (s Service) VerifySecurityCode(phone string, code string, action string) er
 	securityCode, err := s.repository.GetSecurityCode(phone)
 	switch err != nil {
 	case true:
+		switch errors2.As(err, &errors.EntityNotFound{}) {
+		case true:
+			return SecurityCodeNotValid{}
+		}
 		return errors.InternalError{}
 	}
 	switch checkHashMatch(code, securityCode.SecurityCode) {
