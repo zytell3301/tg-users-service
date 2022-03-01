@@ -22,7 +22,7 @@ type Service struct {
 }
 
 const (
-	security_code_signup_action = "SIGN UP"
+	security_code_signup_action = "SIGNUP"
 	security_code_login_action  = "LOGIN"
 )
 
