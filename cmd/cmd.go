@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gocql/gocql"
 	"github.com/spf13/viper"
 	ErrorReporter "github.com/zytell3301/tg-error-reporter"
 	core2 "github.com/zytell3301/tg-users-service/internal/core"
@@ -34,8 +35,9 @@ type serviceConfigs struct {
 }
 
 type repositoryConfigs struct {
-	hosts    []string
-	keyspace string
+	hosts             []string
+	keyspace          string
+	consistencyLevels repository.ConsistencyLevels
 }
 
 func main() {
@@ -44,7 +46,7 @@ func main() {
 	configs.serviceConfigs = loadServiceConfigs()
 	errorReporter.InitiateReporter(configs.serviceConfigs.instanceId, configs.serviceConfigs.serviceId, ErrorReporter.DefaultReporter{})
 	uuidGenerator := newUuidGenerator(configs.serviceConfigs.uuidSpace)
-	repo := newUsersRepo(configs.repositoryConfigs.hosts, configs.repositoryConfigs.keyspace, uuidGenerator)
+	repo := newUsersRepo(configs.repositoryConfigs.hosts, configs.repositoryConfigs.keyspace, uuidGenerator, configs.repositoryConfigs.consistencyLevels)
 	certGen := newCertgen()
 	usersCore := core2.NewUsersCore(repo, certGen)
 	grpcHandler := grpcHandlers.NewHandler(usersCore)
@@ -83,9 +85,9 @@ func newUuidGenerator(space string) *uuid_generator.Generator {
 	return uuidGenerator
 }
 
-func newUsersRepo(hosts []string, keyspace string, uuidGenerator *uuid_generator.Generator) repository.Repository {
+func newUsersRepo(hosts []string, keyspace string, uuidGenerator *uuid_generator.Generator, consistencyLevels repository.ConsistencyLevels) repository.Repository {
 	fmt.Println("Creating new users repository instance...")
-	repo, err := repository.NewUsersRepository(hosts, keyspace, uuidGenerator)
+	repo, err := repository.NewUsersRepository(hosts, keyspace, uuidGenerator, consistencyLevels)
 	switch err != nil {
 	case true:
 		log.Fatalf("An error occurred while creating users repository. Error message: %v", err)
@@ -119,8 +121,43 @@ func loadRepositoryConfigs() (config repositoryConfigs) {
 	cfg := loadConfig("repository")
 	config.hosts = cfg.GetStringSlice("hosts")
 	config.keyspace = cfg.GetString("keyspace")
-	fmt.Println("Repository cofig loaded successfully")
+	consistencyLevels := cfg.GetStringMapString("consistency-levels")
+	config.consistencyLevels.NewUser = parseConsistencyLevel(consistencyLevels["new-user"])
+	config.consistencyLevels.GetUserByPhone = parseConsistencyLevel(consistencyLevels["get-user-by-phone"])
+	config.consistencyLevels.GetSecurityCode = parseConsistencyLevel(consistencyLevels["get-security-code"])
+	config.consistencyLevels.GetUserByUsername = parseConsistencyLevel(consistencyLevels["get-user-by-username"])
+	config.consistencyLevels.DoesUserExists = parseConsistencyLevel(consistencyLevels["does-user-exists"])
+	config.consistencyLevels.RecordSecurityCode = parseConsistencyLevel(consistencyLevels["record-security-code"])
+	config.consistencyLevels.DeleteUser = parseConsistencyLevel(consistencyLevels["delete-user"])
+	config.consistencyLevels.UpdateUsername = parseConsistencyLevel(consistencyLevels["update-username"])
+	config.consistencyLevels.DoesUsernameExists = parseConsistencyLevel(consistencyLevels["does-username-exists"])
+	fmt.Println("Repository config loaded successfully")
 	return
+}
+
+func parseConsistencyLevel(level string) gocql.Consistency {
+	switch level {
+	case "ALL":
+		return gocql.All
+	case "ONE":
+		return gocql.One
+	case "TWO":
+		return gocql.Two
+	case "THREE":
+		return gocql.Three
+	case "ANY":
+		return gocql.Any
+	case "QUORUM":
+		return gocql.Quorum
+	case "EACH-QUORUM":
+		return gocql.EachQuorum
+	case "LOCAL-ONE":
+		return gocql.LocalOne
+	case "LOCAL-QUORUM":
+		return gocql.LocalQuorum
+	default:
+		panic(fmt.Sprintf("Defined consistency level is not valid. Expected:ALL,ANY,ONE,TWO,THREE,QUORUM,LOCAL-QUORUM,EACH,QUORUM,LOCAL-ONE, got: %v", level))
+	}
 }
 
 func loadServiceConfigs() (config serviceConfigs) {
