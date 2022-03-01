@@ -6,6 +6,8 @@ services:
     ports:
     - 4042:4042
     restart: on-failure
+    volumes:
+    - $GOPATH/pkg:/go/pkg
   cassandra-4.0.3:
     image: cassandra:4.0.3
     networks:
