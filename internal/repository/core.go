@@ -18,6 +18,7 @@ type Repository struct {
 	securityCodesMetaData   cassandraQB.TableMetadata
 	connection              cassandraQB.Connection
 	idGenerator             *uuid_generator.Generator
+	consistencyLevels       ConsistencyLevels
 }
 
 type ConsistencyLevels struct {
@@ -85,7 +86,7 @@ var securityCodesMetaData = cassandraQB.TableMetadata{
 	},
 }
 
-func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generator.Generator) (Repository, error) {
+func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generator.Generator, consistencyLevels ConsistencyLevels) (Repository, error) {
 	connection := cassandraQB.Connection{
 		Cluster: gocql.NewCluster(hosts...),
 		Session: nil,
@@ -111,6 +112,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 		usersPkUsernameMetadata: usersPkUsernameMetadata,
 		securityCodesMetaData:   securityCodesMetaData,
 		idGenerator:             generator,
+		consistencyLevels:       consistencyLevels,
 	}, nil
 }
 
