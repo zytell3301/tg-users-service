@@ -61,10 +61,10 @@ func (h Handler) DeleteUser(ctx context.Context, phone *UsersService.Phone) (*er
 	err := h.core.DeleteUser(phone.Phone)
 
 	switch {
-	case errors.As(err, &core.UserNotFound{}):
+	case errors.As(err, &errors2.InternalError{}):
 		return &error1.Error{
-			Message: core.UserNotFoundError.Message,
-			Code:    core.UserNotFoundError.Code,
+			Message: errors2.InternalErrorOccurred.Message,
+			Code:    errors2.InternalErrorOccurred.Code,
 		}, nil
 	}
 
