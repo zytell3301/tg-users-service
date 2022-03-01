@@ -20,6 +20,18 @@ type Repository struct {
 	idGenerator             *uuid_generator.Generator
 }
 
+type ConsistencyLevels struct {
+	NewUser            gocql.Consistency
+	UpdateUsername     gocql.Consistency
+	DeleteUser         gocql.Consistency
+	DoesUserExists     gocql.Consistency
+	DoesUsernameExists gocql.Consistency
+	GetUserByUsername  gocql.Consistency
+	GetUserByPhone     gocql.Consistency
+	RecordSecurityCode gocql.Consistency
+	GetSecurityCode    gocql.Consistency
+}
+
 var usersMetadata = cassandraQB.TableMetadata{
 	Keyspace: "tg",
 	Pk:       map[string]struct{}{"id": {}},
