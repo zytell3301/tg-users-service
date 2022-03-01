@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gocql/gocql"
 	"github.com/zytell3301/cassandra-query-builder"
 	errors2 "github.com/zytell3301/tg-globals/errors"
@@ -379,7 +380,7 @@ func (r Repository) RecordSecurityCode(securityCode domain.SecurityCode) (err er
 }
 
 func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
-	statement, err := r.securityCodesMetaData.GetSelectStatement(map[string]interface{}{"phone": phone}, []string{"phone", "code", "writetime(code) as created_at"})
+	statement, err := r.securityCodesMetaData.GetSelectStatement(map[string]interface{}{"phone": phone}, []string{"phone", "code", "writetime(code) as created_at", "action"})
 	switch err != nil {
 	case true:
 		reportQueryError(err)
@@ -400,7 +401,7 @@ func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
 		Phone:        securityCode["phone"].(string),
 		SecurityCode: securityCode["code"].(string),
 		Action:       securityCode["action"].(string),
-		CreatedAt:    securityCode["created_at"].(time.Time),
+		CreatedAt:    parseMicroSeconds(securityCode["created_at"].(int64)),
 	}, nil
 }
 
@@ -413,4 +414,8 @@ func reportError(subject string, err error) {
 
 func reportQueryError(err error) {
 	reportError("executing a query", err)
+}
+
+func parseMicroSeconds(seconds int64) time.Time {
+	return time.Unix(0, 100*seconds)
 }
