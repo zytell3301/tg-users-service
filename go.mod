@@ -9,7 +9,7 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/spf13/afero v1.8.0 // indirect
 	github.com/spf13/viper v1.10.1
-	github.com/zytell3301/cassandra-query-builder v0.0.0-20220301112127-945b0e8778c5
+	github.com/zytell3301/cassandra-query-builder v0.0.0-20220301190512-52614eef5203
 	github.com/zytell3301/tg-error-reporter v0.0.0-20220228214811-e270737d4fab
 	github.com/zytell3301/tg-globals v0.0.0-20220220204730-f74dd32ca4de
 	github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad

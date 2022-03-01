@@ -359,6 +359,8 @@ github.com/zytell3301/cassandra-query-builder v0.0.0-20220103235333-1de214bffd73
 github.com/zytell3301/cassandra-query-builder v0.0.0-20220103235333-1de214bffd73/go.mod h1:lifWt8Oe1PPWf9kw/8uonFAz7v9QaAxPH4Z9Vbrm+Zk=
 github.com/zytell3301/cassandra-query-builder v0.0.0-20220301112127-945b0e8778c5 h1:mrj0e1wgiyYDKvELBtwyuuh5kv7spPtnnBtE9GjUe8E=
 github.com/zytell3301/cassandra-query-builder v0.0.0-20220301112127-945b0e8778c5/go.mod h1:23zrXpVSpOJ3f73eKtpcCTnwFS9ZNZQxKjcuuytjIms=
+github.com/zytell3301/cassandra-query-builder v0.0.0-20220301190512-52614eef5203 h1:NCFmCQSJVrVPzlv5gUr39/Kv8VwvgFvReS/G4cjUhtM=
+github.com/zytell3301/cassandra-query-builder v0.0.0-20220301190512-52614eef5203/go.mod h1:23zrXpVSpOJ3f73eKtpcCTnwFS9ZNZQxKjcuuytjIms=
 github.com/zytell3301/tg-error-reporter v0.0.0-20220110231906-5eee1b7d6497 h1:peLYBEdqQefsOi11/IvyO9JXpSol+O9An0cdTAL9c/g=
 github.com/zytell3301/tg-error-reporter v0.0.0-20220110231906-5eee1b7d6497/go.mod h1:R+kx1OqTYdYvhvcZwQgmF2zfn1eEhE3qLIuJwcGKMjE=
 github.com/zytell3301/tg-error-reporter v0.0.0-20220221220703-4ee78e265db8 h1:LUD+yYY6DrmYZJnxADYjWEcqe3889VMxSDhgxp0yIto=
