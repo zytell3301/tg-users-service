@@ -3,3 +3,24 @@ hosts:
 
 # Keyspace that will be used by repository
 keyspace:
+
+# Consistency levels can be:
+#  1-ALL
+#  2-ONE
+#  3-TWO
+#  4-THREE
+#  5-ANY
+#  6-QUORUM
+#  7-LOCAL-QUORUM
+#  8-EACH-QUORUM
+#  9-LOCAL-ONE
+consistency-levels:
+  new-user: ALL
+  update-username: ALL
+  delete-user: ALL
+  does-user-exists: ONE
+  does-username-exists: ONE
+  get-user-by-username: ONE
+  get-user-by-phone: ONE
+  record-security-code: ALL
+  get-security-code: ONE
