@@ -4,12 +4,12 @@ go 1.16
 
 require (
 	bou.ke/monkey v1.0.2 // indirect
-	github.com/gocql/gocql v0.0.0-20211222173705-d73e6b1002a7
+	github.com/gocql/gocql v0.0.0-20220224095938-0eacd3183625
 	github.com/golang/mock v1.6.0
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/spf13/afero v1.8.0 // indirect
 	github.com/spf13/viper v1.10.1
-	github.com/zytell3301/cassandra-query-builder v0.0.0-20220103235333-1de214bffd73
+	github.com/zytell3301/cassandra-query-builder v0.0.0-20220301112127-945b0e8778c5
 	github.com/zytell3301/tg-error-reporter v0.0.0-20220228214811-e270737d4fab
 	github.com/zytell3301/tg-globals v0.0.0-20220220204730-f74dd32ca4de
 	github.com/zytell3301/uuid-generator v0.0.0-20211107215705-4e45fc395fad
