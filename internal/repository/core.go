@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gocql/gocql"
 	"github.com/zytell3301/cassandra-query-builder"
 	errors2 "github.com/zytell3301/tg-globals/errors"
@@ -349,9 +348,10 @@ func (r Repository) getUserByPhone(phone string) (domain.User, error) {
 	switch err != nil {
 	case true:
 		switch errors.Is(err, gocql.ErrNotFound) {
-		case false:
-			reportQueryError(err)
+		case true:
+			return domain.User{}, err
 		}
+		reportQueryError(err)
 		return domain.User{}, errors2.InternalError{}
 	}
 	return domain.User{
