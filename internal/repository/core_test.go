@@ -18,11 +18,12 @@ var dummyUser = domain.User{
 	Online_status: false,
 	Created_at:    time.Now(),
 }
+
 //var dummyUserId = "5a087beb-4ba5-4583-b2a0-bce500395e1a"
 var keyspace = "tg"
 
 func TestNewUsersRepository(t *testing.T) {
-	repo, err := NewUsersRepository(hosts, keyspace, idGenerator)
+	repo, err := NewUsersRepository(hosts, keyspace, idGenerator, DefaultConsistencyLevel)
 	switch err != nil || repo.connection.Session == nil || repo.connection.Cluster == nil {
 	case true:
 		t.Errorf("An error encountered while creating a new repo. Error: %v", err)
@@ -30,7 +31,7 @@ func TestNewUsersRepository(t *testing.T) {
 }
 
 func TestNewUsersRepository2(t *testing.T) {
-	_, err := NewUsersRepository(nil, keyspace, idGenerator)
+	_, err := NewUsersRepository(nil, keyspace, idGenerator, DefaultConsistencyLevel)
 	switch err == nil {
 	case true:
 		t.Error("Expected to return error but no error returned")
@@ -40,7 +41,7 @@ func TestNewUsersRepository2(t *testing.T) {
 // Test fails if the number of current active nodes are less than highest RF (Here it is 3).
 // This error is not related to codes
 func TestRepository_NewUser(t *testing.T) {
-	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
+	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator, DefaultConsistencyLevel)
 	err := repo.NewUser(dummyUser)
 	switch err != nil {
 	case true:
@@ -49,7 +50,7 @@ func TestRepository_NewUser(t *testing.T) {
 }
 
 func TestRepository_UpdateUsername(t *testing.T) {
-	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
+	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator, DefaultConsistencyLevel)
 	err := repo.UpdateUsername(dummyUser.Phone, "test_username")
 	switch err != nil {
 	case true:
@@ -58,7 +59,7 @@ func TestRepository_UpdateUsername(t *testing.T) {
 }
 
 func TestRepository_DeleteUser(t *testing.T) {
-	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
+	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator,DefaultConsistencyLevel)
 	err := repo.DeleteUser(dummyUser.Phone)
 	switch err != nil {
 	case true:
@@ -67,7 +68,7 @@ func TestRepository_DeleteUser(t *testing.T) {
 }
 
 func TestRepository_DeleteUser2(t *testing.T) {
-	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator)
+	repo, _ := NewUsersRepository(hosts, keyspace, idGenerator,DefaultConsistencyLevel)
 	err := repo.DeleteUser("")
 	switch err == nil {
 	case true:
