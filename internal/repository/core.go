@@ -238,6 +238,7 @@ func (r Repository) DeleteUser(phone string) (err error) {
 		reportQueryError(err)
 		return errors2.InternalError{}
 	}
+	batch.SetConsistency(r.consistencyLevels.DeleteUser)
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
