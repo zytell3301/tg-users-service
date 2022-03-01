@@ -139,6 +139,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 
 	err = r.usersPkPhoneMetadata.NewRecord(map[string]interface{}{
 		"id":       id.String(),
+		"name":     data["name"],
 		"phone":    data["phone"],
 		"lastname": data["lastname"],
 		"bio":      data["bio"],
@@ -154,6 +155,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
+		reportQueryError(err)
 		return errors2.InternalError{}
 	}
 	return
