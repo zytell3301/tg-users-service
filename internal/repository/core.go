@@ -150,7 +150,7 @@ func (r Repository) NewUser(user domain.User) (err error) {
 		reportQueryError(err)
 		return errors2.InternalError{}
 	}
-
+	batch.SetConsistency(r.consistencyLevels.NewUser)
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
@@ -337,7 +337,14 @@ func (r Repository) GetUserByPhone(phone string) (domain.User, error) {
 }
 
 func (r Repository) getUserByPhone(phone string) (domain.User, error) {
-	user, err := r.usersPkPhoneMetadata.GetRecord(map[string]interface{}{"phone": phone}, []string{"*"})
+	statement, err := r.usersPkPhoneMetadata.GetSelectStatement(map[string]interface{}{"phone": phone}, []string{"*"})
+	switch err != nil {
+	case true:
+		reportQueryError(err)
+		return domain.User{}, errors2.InternalError{}
+	}
+	statement.SetConsistency(r.consistencyLevels.GetUserByPhone)
+	user, err := r.usersPkPhoneMetadata.FetchFromSelectStatement(statement)
 	switch err != nil {
 	case true:
 		switch errors.Is(err, gocql.ErrNotFound) {
@@ -372,7 +379,14 @@ func (r Repository) RecordSecurityCode(securityCode domain.SecurityCode) (err er
 }
 
 func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
-	securityCode, err := r.securityCodesMetaData.GetRecord(map[string]interface{}{"phone": phone}, []string{"phone", "code", "writetime(code) as created_at"})
+	statement, err := r.securityCodesMetaData.GetSelectStatement(map[string]interface{}{"phone": phone}, []string{"phone", "code", "writetime(code) as created_at"})
+	switch err != nil {
+	case true:
+		reportQueryError(err)
+		return domain.SecurityCode{}, errors2.InternalError{}
+	}
+	statement.SetConsistency(r.consistencyLevels.GetSecurityCode)
+	securityCode, err := r.securityCodesMetaData.FetchFromSelectStatement(statement)
 	switch err != nil {
 	case true:
 		switch errors.Is(err, gocql.ErrNotFound) {
