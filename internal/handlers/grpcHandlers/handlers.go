@@ -40,10 +40,15 @@ func (h Handler) NewUser(ctx context.Context, message *UsersService.NewUserMessa
 			Message: core.UserAlreadyExistsError.Message,
 			Code:    core.UserAlreadyExistsError.Code,
 		}, nil
-	case errors.As(err, &core.SecurityCodeNotValid{}):
+	case errors.As(err, &core.SecurityCodeNotValid{}) || errors.As(err, &core.SecurityCodeActionDoesNotMatch{}):
 		return &error1.Error{
 			Message: core.SecurityCodeNotValidError.Message,
 			Code:    core.SecurityCodeNotValidError.Code,
+		}, nil
+	case errors.As(err, &errors2.InternalError{}):
+		return &error1.Error{
+			Message: errors2.InternalErrorOccurred.Message,
+			Code:    errors2.InternalErrorOccurred.Code,
 		}, nil
 	}
 
