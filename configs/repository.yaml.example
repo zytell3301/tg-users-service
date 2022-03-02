@@ -4,6 +4,10 @@ hosts:
 # Keyspace that will be used by repository
 keyspace:
 
+# Cassandra default port is 9042
+# Change this value if your database using other port
+port: 9042
+
 # Consistency levels can be:
 #  1-ALL
 #  2-ONE
