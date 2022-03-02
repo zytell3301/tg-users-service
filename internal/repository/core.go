@@ -267,7 +267,7 @@ func (r Repository) DoesUserExists(phone string) (bool, error) {
 }
 
 func (r Repository) DoesUsernameExists(username string) (bool, error) {
-	_, err := r.getIdByUsername(username)
+	_, err := r.getIdByUsername(username, r.consistencyLevels.DoesUsernameExists)
 	switch err != nil {
 	case true:
 		switch errors.Is(err, gocql.ErrNotFound) {
@@ -281,8 +281,14 @@ func (r Repository) DoesUsernameExists(username string) (bool, error) {
 	}
 }
 
-func (r Repository) getIdByUsername(username string) (string, error) {
-	user, err := r.usersPkUsernameMetadata.GetRecord(map[string]interface{}{"username": username}, []string{"id"})
+func (r Repository) getIdByUsername(username string, consistencyLevel gocql.Consistency) (string, error) {
+	statement, err := r.usersPkUsernameMetadata.GetSelectStatement(map[string]interface{}{"username": username}, []string{"id"})
+	switch err != nil {
+	case true:
+		return "", err
+	}
+	statement.SetConsistency(consistencyLevel)
+	user, err := r.usersPkUsernameMetadata.FetchFromSelectStatement(statement)
 	switch err != nil {
 	case true:
 		switch errors.Is(err, gocql.ErrNotFound) {
@@ -299,7 +305,7 @@ func (r Repository) GetUserByUsername(username string) (domain.User, error) {
 }
 
 func (r Repository) getUserByUsername(username string) (domain.User, error) {
-	id, err := r.getIdByUsername(username)
+	id, err := r.getIdByUsername(username, r.consistencyLevels.GetUserByUsername)
 	switch err != nil {
 	case true:
 		return domain.User{}, errors2.InternalError{}
