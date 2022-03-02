@@ -22,7 +22,7 @@ import (
 const ProjectRoot = "."
 
 type configs struct {
-	repositoryConfigs repositoryConfigs
+	repositoryConfigs repository.Configs
 	serviceConfigs    serviceConfigs
 }
 
@@ -34,20 +34,13 @@ type serviceConfigs struct {
 	instanceId  string
 }
 
-type repositoryConfigs struct {
-	hosts             []string
-	keyspace          string
-	port              int
-	consistencyLevels repository.ConsistencyLevels
-}
-
 func main() {
 	configs := configs{}
 	configs.repositoryConfigs = loadRepositoryConfigs()
 	configs.serviceConfigs = loadServiceConfigs()
 	errorReporter.InitiateReporter(configs.serviceConfigs.instanceId, configs.serviceConfigs.serviceId, ErrorReporter.DefaultReporter{})
 	uuidGenerator := newUuidGenerator(configs.serviceConfigs.uuidSpace)
-	repo := newUsersRepo(configs.repositoryConfigs.hosts, configs.repositoryConfigs.keyspace, uuidGenerator, configs.repositoryConfigs.consistencyLevels)
+	repo := newUsersRepo(configs.repositoryConfigs.Hosts, configs.repositoryConfigs.Keyspace, uuidGenerator, configs.repositoryConfigs.ConsistencyLevels)
 	certGen := newCertgen()
 	usersCore := core2.NewUsersCore(repo, certGen)
 	grpcHandler := grpcHandlers.NewHandler(usersCore)
@@ -117,22 +110,22 @@ func newListener(configs configs) net.Listener {
 	return listener
 }
 
-func loadRepositoryConfigs() (config repositoryConfigs) {
+func loadRepositoryConfigs() (config repository.Configs) {
 	fmt.Println("Loading repository configs")
 	cfg := loadConfig("repository")
-	config.hosts = cfg.GetStringSlice("hosts")
-	config.keyspace = cfg.GetString("keyspace")
+	config.Hosts = cfg.GetStringSlice("hosts")
+	config.Keyspace = cfg.GetString("keyspace")
 	consistencyLevels := cfg.GetStringMapString("consistency-levels")
-	config.consistencyLevels.NewUser = parseConsistencyLevel(consistencyLevels["new-user"])
-	config.consistencyLevels.GetUserByPhone = parseConsistencyLevel(consistencyLevels["get-user-by-phone"])
-	config.consistencyLevels.GetSecurityCode = parseConsistencyLevel(consistencyLevels["get-security-code"])
-	config.consistencyLevels.GetUserByUsername = parseConsistencyLevel(consistencyLevels["get-user-by-username"])
-	config.consistencyLevels.DoesUserExists = parseConsistencyLevel(consistencyLevels["does-user-exists"])
-	config.consistencyLevels.RecordSecurityCode = parseConsistencyLevel(consistencyLevels["record-security-code"])
-	config.consistencyLevels.DeleteUser = parseConsistencyLevel(consistencyLevels["delete-user"])
-	config.consistencyLevels.UpdateUsername = parseConsistencyLevel(consistencyLevels["update-username"])
-	config.consistencyLevels.DoesUsernameExists = parseConsistencyLevel(consistencyLevels["does-username-exists"])
-	config.port = cfg.GetInt("port")
+	config.ConsistencyLevels.NewUser = parseConsistencyLevel(consistencyLevels["new-user"])
+	config.ConsistencyLevels.GetUserByPhone = parseConsistencyLevel(consistencyLevels["get-user-by-phone"])
+	config.ConsistencyLevels.GetSecurityCode = parseConsistencyLevel(consistencyLevels["get-security-code"])
+	config.ConsistencyLevels.GetUserByUsername = parseConsistencyLevel(consistencyLevels["get-user-by-username"])
+	config.ConsistencyLevels.DoesUserExists = parseConsistencyLevel(consistencyLevels["does-user-exists"])
+	config.ConsistencyLevels.RecordSecurityCode = parseConsistencyLevel(consistencyLevels["record-security-code"])
+	config.ConsistencyLevels.DeleteUser = parseConsistencyLevel(consistencyLevels["delete-user"])
+	config.ConsistencyLevels.UpdateUsername = parseConsistencyLevel(consistencyLevels["update-username"])
+	config.ConsistencyLevels.DoesUsernameExists = parseConsistencyLevel(consistencyLevels["does-username-exists"])
+	config.Port = cfg.GetInt("port")
 	fmt.Println("Repository config loaded successfully")
 	return
 }

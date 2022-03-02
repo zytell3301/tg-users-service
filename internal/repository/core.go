@@ -21,6 +21,13 @@ type Repository struct {
 	consistencyLevels       ConsistencyLevels
 }
 
+type Configs struct {
+	Hosts             []string
+	Keyspace          string
+	Port              int
+	ConsistencyLevels ConsistencyLevels
+}
+
 type ConsistencyLevels struct {
 	NewUser            gocql.Consistency
 	UpdateUsername     gocql.Consistency
