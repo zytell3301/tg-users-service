@@ -37,6 +37,7 @@ type serviceConfigs struct {
 type repositoryConfigs struct {
 	hosts             []string
 	keyspace          string
+	port              int
 	consistencyLevels repository.ConsistencyLevels
 }
 
@@ -131,6 +132,7 @@ func loadRepositoryConfigs() (config repositoryConfigs) {
 	config.consistencyLevels.DeleteUser = parseConsistencyLevel(consistencyLevels["delete-user"])
 	config.consistencyLevels.UpdateUsername = parseConsistencyLevel(consistencyLevels["update-username"])
 	config.consistencyLevels.DoesUsernameExists = parseConsistencyLevel(consistencyLevels["does-username-exists"])
+	config.port = cfg.GetInt("port")
 	fmt.Println("Repository config loaded successfully")
 	return
 }
