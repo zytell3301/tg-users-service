@@ -205,6 +205,7 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 			return errors2.InternalError{}
 		}
 	}
+	batch.SetConsistency(r.consistencyLevels.UpdateUsername)
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
@@ -220,6 +221,7 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 		return errors2.InternalError{}
 	}
 
+	batch.SetConsistency(r.consistencyLevels.UpdateUsername)
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
