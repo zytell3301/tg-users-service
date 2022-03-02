@@ -96,7 +96,7 @@ func (h Handler) UpdateUsername(ctx context.Context, message *UsersService.Updat
 }
 
 func (h Handler) Login(_ context.Context, request *UsersService.LoginRequest) (*UsersService.LoginResponse, error) {
-	cert, err := h.core.Login(request.Phone, request.Phone)
+	cert, err := h.core.Login(request.Phone, request.SecurityCode.Code)
 	switch {
 	case errors.As(err, &core.SecurityCodeNotValid{}):
 		return &UsersService.LoginResponse{
