@@ -93,12 +93,13 @@ var securityCodesMetaData = cassandraQB.TableMetadata{
 	},
 }
 
-func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generator.Generator, consistencyLevels ConsistencyLevels) (Repository, error) {
+func NewUsersRepository(configs Configs, generator *uuid_generator.Generator) (Repository, error) {
 	connection := cassandraQB.Connection{
-		Cluster: gocql.NewCluster(hosts...),
+		Cluster: gocql.NewCluster(configs.Hosts...),
 		Session: nil,
 	}
-	connection.Cluster.Keyspace = keyspace
+	connection.Cluster.Keyspace = configs.Keyspace
+	connection.Cluster.Port = configs.Port
 	connection.Cluster.Consistency = gocql.All
 	session, err := connection.Cluster.CreateSession()
 	switch err != nil {
@@ -119,7 +120,7 @@ func NewUsersRepository(hosts []string, keyspace string, generator *uuid_generat
 		usersPkUsernameMetadata: usersPkUsernameMetadata,
 		securityCodesMetaData:   securityCodesMetaData,
 		idGenerator:             generator,
-		consistencyLevels:       consistencyLevels,
+		consistencyLevels:       configs.ConsistencyLevels,
 	}, nil
 }
 
