@@ -285,6 +285,7 @@ func (r Repository) getIdByUsername(username string, consistencyLevel gocql.Cons
 	statement, err := r.usersPkUsernameMetadata.GetSelectStatement(map[string]interface{}{"username": username}, []string{"id"})
 	switch err != nil {
 	case true:
+		reportQueryError(err)
 		return "", err
 	}
 	statement.SetConsistency(consistencyLevel)
@@ -294,8 +295,9 @@ func (r Repository) getIdByUsername(username string, consistencyLevel gocql.Cons
 		switch errors.Is(err, gocql.ErrNotFound) {
 		case false:
 			reportQueryError(err)
+			return "", errors2.InternalError{}
 		}
-		return "", errors2.InternalError{}
+		return "", err
 	}
 	return user["id"].(gocql.UUID).String(), nil
 }
