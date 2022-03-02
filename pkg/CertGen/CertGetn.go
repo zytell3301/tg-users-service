@@ -31,7 +31,7 @@ func NewCertGenerator(CaCert []byte, CaKey []byte) (CertGen, error) {
 	privateKey, err := ParsePKCS1PrivateKey(CaKey)
 	switch err != nil {
 	case true:
-		return CertGen{}, nil
+		return CertGen{}, err
 	}
 	pool.AddCert(cert)
 	gen.pool = pool
