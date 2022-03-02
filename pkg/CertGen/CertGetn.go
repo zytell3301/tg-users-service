@@ -63,3 +63,8 @@ func DecodePem(cert []byte) *pem.Block {
 func ParsePKCS1PrivateKey(key []byte) (*rsa.PrivateKey, error) {
 	return x509.ParsePKCS1PrivateKey(DecodePem(key).Bytes)
 }
+
+func ParsePKCS8PrivateKey(key []byte) (*rsa.PrivateKey, error) {
+	cert, err := x509.ParsePKCS8PrivateKey(DecodePem(key).Bytes)
+	return cert.(*rsa.PrivateKey), err
+}
