@@ -40,7 +40,7 @@ func main() {
 	configs.serviceConfigs = loadServiceConfigs()
 	errorReporter.InitiateReporter(configs.serviceConfigs.instanceId, configs.serviceConfigs.serviceId, ErrorReporter.DefaultReporter{})
 	uuidGenerator := newUuidGenerator(configs.serviceConfigs.uuidSpace)
-	repo := newUsersRepo(configs.repositoryConfigs.Hosts, configs.repositoryConfigs.Keyspace, uuidGenerator, configs.repositoryConfigs.ConsistencyLevels)
+	repo := newUsersRepo(configs.repositoryConfigs, uuidGenerator)
 	certGen := newCertgen()
 	usersCore := core2.NewUsersCore(repo, certGen)
 	grpcHandler := grpcHandlers.NewHandler(usersCore)
@@ -79,9 +79,9 @@ func newUuidGenerator(space string) *uuid_generator.Generator {
 	return uuidGenerator
 }
 
-func newUsersRepo(hosts []string, keyspace string, uuidGenerator *uuid_generator.Generator, consistencyLevels repository.ConsistencyLevels) repository.Repository {
+func newUsersRepo(configs repository.Configs, uuidGenerator *uuid_generator.Generator) repository.Repository {
 	fmt.Println("Creating new users repository instance...")
-	repo, err := repository.NewUsersRepository(hosts, keyspace, uuidGenerator, consistencyLevels)
+	repo, err := repository.NewUsersRepository(configs, uuidGenerator)
 	switch err != nil {
 	case true:
 		log.Fatalf("An error occurred while creating users repository. Error message: %v", err)
