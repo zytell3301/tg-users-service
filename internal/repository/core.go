@@ -196,11 +196,14 @@ func (r Repository) UpdateUsername(phone string, username string) (err error) {
 		return errors2.InternalError{}
 	}
 
-	err = r.usersPkUsernameMetadata.DeleteRecord(map[string]interface{}{"username": user.Username}, batch)
-	switch err != nil {
+	switch user.Username != "" {
 	case true:
-		reportQueryError(err)
-		return errors2.InternalError{}
+		err = r.usersPkUsernameMetadata.DeleteRecord(map[string]interface{}{"username": user.Username}, batch)
+		switch err != nil {
+		case true:
+			reportQueryError(err)
+			return errors2.InternalError{}
+		}
 	}
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
