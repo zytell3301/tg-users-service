@@ -400,7 +400,14 @@ func (r Repository) RecordSecurityCode(securityCode domain.SecurityCode) (err er
 		reportQueryError(err)
 		return
 	}
-	return r.connection.Session.ExecuteBatch(batch)
+
+	err = r.connection.Session.ExecuteBatch(batch)
+	switch err != nil {
+	case true:
+		reportQueryError(err)
+		return errors2.InternalError{}
+	}
+	return nil
 }
 
 func (r Repository) GetSecurityCode(phone string) (domain.SecurityCode, error) {
