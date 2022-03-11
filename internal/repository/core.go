@@ -325,7 +325,14 @@ func (r Repository) getUserByUsername(username string) (domain.User, error) {
 	case true:
 		return domain.User{}, errors2.InternalError{}
 	}
-	user, err := r.usersMetadata.GetRecord(map[string]interface{}{"id": id}, []string{"*"})
+	statement, err := r.usersMetadata.GetSelectStatement(map[string]interface{}{"id": id}, []string{"*"})
+	switch err != nil {
+	case true:
+		reportQueryError(err)
+		return domain.User{}, errors2.InternalError{}
+	}
+	statement.SetConsistency(r.consistencyLevels.GetUserByUsername)
+	user, err := r.usersMetadata.FetchFromSelectStatement(statement)
 	switch err != nil {
 	case true:
 		switch errors.Is(err, gocql.ErrNotFound) {
