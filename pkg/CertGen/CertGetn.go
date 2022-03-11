@@ -28,7 +28,7 @@ func NewCertGenerator(CaCert []byte, CaKey []byte) (CertGen, error) {
 	case true:
 		return CertGen{}, err
 	}
-	privateKey, err := ParsePKCS1PrivateKey(CaKey)
+	privateKey, err := ParsePKCS8PrivateKey(CaKey)
 	switch err != nil {
 	case true:
 		return CertGen{}, err
@@ -42,7 +42,7 @@ func NewCertGenerator(CaCert []byte, CaKey []byte) (CertGen, error) {
 
 func (c CertGen) NewCertificate(cert *x509.Certificate) ([]byte, error) {
 	cert.SerialNumber = GenerateUniqueId()
-	return x509.CreateCertificate(rand.Reader, cert, c.CaCert, c.CaKey.PublicKey, c.CaKey)
+	return x509.CreateCertificate(rand.Reader, cert, c.CaCert, c.CaCert.PublicKey, c.CaKey)
 }
 
 func GenerateUniqueId() *big.Int {
