@@ -401,6 +401,7 @@ func (r Repository) RecordSecurityCode(securityCode domain.SecurityCode) (err er
 		return
 	}
 
+	batch.SetConsistency(r.consistencyLevels.RecordSecurityCode)
 	err = r.connection.Session.ExecuteBatch(batch)
 	switch err != nil {
 	case true:
