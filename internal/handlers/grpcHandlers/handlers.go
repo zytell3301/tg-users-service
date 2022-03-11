@@ -139,7 +139,9 @@ func (h Handler) RequestSignupSecurityCode(_ context.Context, request *UsersServ
 			Code:    core.UserAlreadyExistsError.Code,
 		}, nil
 	}
-	return nil, nil
+	return &error1.Error{
+		Code: 0,
+	}, nil
 }
 
 func (h Handler) RequestLoginSecurityCode(_ context.Context, request *UsersService.Phone) (*error1.Error, error) {
@@ -156,7 +158,9 @@ func (h Handler) RequestLoginSecurityCode(_ context.Context, request *UsersServi
 			Code:    core.UserNotFoundError.Code,
 		}, nil
 	}
-	return nil, nil
+	return &error1.Error{
+		Code: 0,
+	}, nil
 }
 
 func (h Handler) VerifySecurityCode(_ context.Context, request *UsersService.VerifySecurityCodeRequest) (*error1.Error, error) {
@@ -178,7 +182,9 @@ func (h Handler) VerifySecurityCode(_ context.Context, request *UsersService.Ver
 			Code:    core.SecurityCodeActionDoesNotMatchError.Code,
 		}, nil
 	}
-	return nil, nil
+	return &error1.Error{
+		Code: 0,
+	}, nil
 }
 
 func (h Handler) GetUserByUsername(_ context.Context, request *UsersService.GetUserByUsernameRequest) (*UsersService.GetUserByUsernameResponse, error) {
